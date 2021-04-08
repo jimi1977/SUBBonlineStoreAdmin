@@ -1,0 +1,115 @@
+{
+  "project_info": {
+    "project_number": "589870710710",
+    "firebase_url": "https://local-grocery-onlineshop.firebaseio.com",
+    "project_id": "local-grocery-onlineshop",
+    "storage_bucket": "local-grocery-onlineshop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589870710710:android:04173f000c036302074b17",
+        "android_client_info": {
+          "package_name": "com.tech.grat.subbonline.subbonline_storeadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589870710710-gupcokiqseeeg6am1q1a7lnbfdjiandg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tech.grat.subbonline.subbonline_storeadmin",
+            "certificate_hash": "301f71867502c37558487029e6c18daa0823fba2"
+          }
+        },
+        {
+          "client_id": "589870710710-83ses6996sodibhf21vknv8c2mu80omk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnPSvImjC-BygLEvjTNfPWTRAUuvMTvgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589870710710-83ses6996sodibhf21vknv8c2mu80omk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "589870710710-sf2sclghfh8es3gf1pnm3ttoblq6paib.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tech.horizon.localgroceryonline"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589870710710:android:622df1e97e727f00074b17",
+        "android_client_info": {
+          "package_name": "com.tech.horizon.localgroceryonline"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589870710710-cpejpc5mo677uac1sg0cnjqi3mi0q3lr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tech.horizon.localgroceryonline",
+            "certificate_hash": "301f71867502c37558487029e6c18daa0823fba2"
+          }
+        },
+        {
+          "client_id": "589870710710-eiidjqikbk1fsma0pit29aq3od5jcb4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tech.horizon.localgroceryonline",
+            "certificate_hash": "a2578f0fb376eeba27a5e1b78a3be94ca129f014"
+          }
+        },
+        {
+          "client_id": "589870710710-tsbv0foc479shh5erlanhnnf0kub7dgd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tech.horizon.localgroceryonline",
+            "certificate_hash": "24b9d579a1027cf00f58334a66f22f1c551328d2"
+          }
+        },
+        {
+          "client_id": "589870710710-83ses6996sodibhf21vknv8c2mu80omk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnPSvImjC-BygLEvjTNfPWTRAUuvMTvgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589870710710-83ses6996sodibhf21vknv8c2mu80omk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "589870710710-sf2sclghfh8es3gf1pnm3ttoblq6paib.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tech.horizon.localgroceryonline"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
