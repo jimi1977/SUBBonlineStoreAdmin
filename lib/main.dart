@@ -1,111 +1,164 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(MyApp());
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:subbonline_storeadmin/constants.dart';
+import 'package:subbonline_storeadmin/route_generator.dart';
+import 'package:subbonline_storeadmin/screens/store_selection.dart';
+import 'package:subbonline_storeadmin/screens/subbonline_store_home_page.dart';
+import 'package:subbonline_storeadmin/services/shared_preferences_service.dart';
+import 'package:subbonline_storeadmin/signin/authwidget.dart';
+import 'package:subbonline_storeadmin/signin/signin_page.dart';
+import 'package:subbonline_storeadmin/signin/user_login_page.dart';
+import 'package:subbonline_storeadmin/viewmodels/onboarding_view_model.dart';
+import 'package:subbonline_storeadmin/viewmodels/user_login_view_model.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  final sharedPreferences = await SharedPreferences.getInstance();
+
+  runApp(ProviderScope(overrides: [
+      sharedPreferencesServiceProvider.overrideWithValue(
+        SharedPreferencesService(sharedPreferences),
+      ),
+    ], child: SubOnlineStoreApp()),
+  );
+  configLoading();
+
 }
 
-class MyApp extends StatelessWidget {
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..dismissOnTap = false;
+}
+
+class SubOnlineStoreApp extends StatelessWidget {
   // This widget is the root of your application.
+
+
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      child: MaterialApp(
-        title: 'SUBBonline Store',
-        theme: ThemeData(
-            primaryColor: Colors.white,
-            fontFamily: 'Montserrat',
-            scaffoldBackgroundColor: Colors.white,
-            appBarTheme: AppBarTheme(elevation: 0.0), //This is important
-            visualDensity: VisualDensity.adaptivePlatformDensity
-        ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
+    return MaterialApp(
+      builder: EasyLoading.init(),
+
+      debugShowCheckedModeBanner: false,
+      title: 'SUBBonline Store',
+      theme: ThemeData(
+          primaryColor: Colors.white,
+          fontFamily: 'Roboto',
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: AppBarTheme(elevation: 0.0),
+          //This is important
+          // timePickerTheme: TimePickerThemeData(
+          //   backgroundColor: Colors.orangeAccent[200],
+          //   shape:
+          //   RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          //   hourMinuteShape: CircleBorder(),
+          // ),
+          visualDensity: VisualDensity.adaptivePlatformDensity),
+      home: AuthWidget(
+        nonSignedInBuilder: (_) => SignInPage(),
+        signedInBuilder: (_) => Consumer(builder: (context, watch, _) {
+          final didCompleteOnboarding = watch(onboardingViewModelProvider);
+          final loginSuccessful = watch(userLoginViewModelProvider);
+          return didCompleteOnboarding
+              ? loginSuccessful
+                  ? SubbOnlineStoreHomePage(title: kAppTitle)
+                  : UserLoginPage()
+              : OnboardingPage();
+          //MyHomePage(title: "This is SUBBonline Store App")
+        }),
+        //signedInBuilder: (_) => MyHomePage(title: "This is SUBBonline Store App"),
       ),
+      //builder: EasyLoading.init(),
+      //initialRoute: AuthWidget.id,
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        /*Avoid pushing contents up by keyboard*/
+        backgroundColor: Colors.white,
+        body: Stack(
+          fit: StackFit.loose,
+          children: [
+            Align(alignment: Alignment.bottomLeft, child: BackGroundPage()),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
+                child: Text(
+                  "Welcome to SUBBOnline Store",
+                  style: TextStyle(fontFamily: 'Roboto', fontSize: 20),
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Align(
+              alignment: Alignment.topCenter,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 150,
+                  ),
+                  StoreSelection(),
+
+                  // ElevatedButton(
+                  //     onPressed: () async {
+                  //       final onboardingViewModel = context.read(onboardingViewModelProvider.notifier);
+                  //       await onboardingViewModel.completeOnboarding();
+                  //     },
+                  //     child: Text("Complete", style: TextStyle(color: Colors.white, fontSize: 16))),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class BackGroundPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var orientation = MediaQuery.of(context).orientation;
+    double _heightFactor = 2;
+    double _widthFactor = 1.4;
+    if (orientation == Orientation.landscape) {
+      _heightFactor = 1.8;
+      _widthFactor = 2.3;
+    }
+    return Container(
+        color: Colors.white,
+        child: Image.asset(
+          'images/subbonline_store_bg.jpg',
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.bottomCenter,
+          height: MediaQuery.of(context).size.height / _heightFactor,
+          width: MediaQuery.of(context).size.width / _widthFactor,
+        ));
   }
 }
