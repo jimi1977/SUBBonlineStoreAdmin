@@ -108,6 +108,7 @@ class _StoreSelectionState extends State<UserLoginWidget> {
                   maxLength: 10,
                   textInputAction: TextInputAction.done,
                   validateFunction: _validateUserPassword,
+                  onFieldSubmittedFunction: onLoginSubmitted,
                 errortext: _userValidationError
               ),
 
@@ -127,34 +128,7 @@ class _StoreSelectionState extends State<UserLoginWidget> {
                       padding: const EdgeInsets.only(bottom: 5, top: 5, left: 30, right: 30),
                       child: ElevatedButton(
                           onPressed: () async {
-                            setState(() {
-                              bLogin = true;
-                            });
-                            _formKey.currentState.validate();
-                            String userId = userLoginController.text;
-                            String password = userPasswordController.text;
-                            bool bUserVerified = await userLoginViewModel.verifyUserPassword(userId, password);
-                            setState(() {
-                              bLogin = false;
-                            });
-                            if (bUserVerified) {
-                              print("USER LOGIN SUCCESSFUL");
-                              await userLoginViewModel.saveLastLoginId(userId);
-                              userLoginViewModel.loginSuccess();
-                              setState(() {
-                                _userValidationError = null;
-                              });
-                              // final progressBarViewModel = context.read(progressViewModelProvider.notifier);
-                              // progressBarViewModel.startProgress();
-                            }
-                            else {
-                              print("USER LOGIN NOT-SUCCESSFUL");
-                              setState(() {
-                                _userValidationError = 'Invalid User ID or Password.';
-                              });
-                            }
-
-                            //await onPressCompleteButton();
+                            await onLoginSubmitted();
                           },
                           child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16))),
                     ),
@@ -166,6 +140,38 @@ class _StoreSelectionState extends State<UserLoginWidget> {
         ),
       ),
     );
+  }
+
+  Future<void>  onLoginSubmitted() async {
+    final userLoginViewModel = context.read(userLoginViewModelProvider.notifier);
+    setState(() {
+      bLogin = true;
+    });
+    _formKey.currentState.validate();
+    String userId = userLoginController.text;
+    String password = userPasswordController.text;
+    bool bUserVerified = await userLoginViewModel.verifyUserPassword(userId, password);
+    setState(() {
+      bLogin = false;
+    });
+    if (bUserVerified) {
+      print("USER LOGIN SUCCESSFUL");
+      await userLoginViewModel.saveLastLoginId(userId);
+      userLoginViewModel.loginSuccess();
+      setState(() {
+        _userValidationError = null;
+      });
+      // final progressBarViewModel = context.read(progressViewModelProvider.notifier);
+      // progressBarViewModel.startProgress();
+    }
+    else {
+      print("USER LOGIN NOT-SUCCESSFUL");
+      setState(() {
+        _userValidationError = 'Invalid User ID or Password.';
+      });
+    }
+
+
   }
 
 

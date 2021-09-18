@@ -16,13 +16,15 @@ import '../viewmodels/user_login_view_model.dart';
 class StoreSetupPage extends StatefulWidget {
   static const id = "store_setup_page";
 
+
+
   StoreSetupPage({Key key}) : super(key: key);
 
   @override
-  _StoreSetupPageState createState() => _StoreSetupPageState();
+  StoreSetupPageState createState() => StoreSetupPageState();
 }
 
-class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAliveClientMixin {
+class StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAliveClientMixin {
   String storeCodeValidationErrorText;
 
   String storeNameValidationErrorText;
@@ -51,6 +53,7 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
   bool bEdit = false;
   bool bInsert = false;
   bool isRetrieved = false;
+  bool isFormChanged = false;
 
   StoreUsers loggedInUser;
 
@@ -81,11 +84,9 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
     isRetrieved = false;
     storeNameEditController.clear();
     storeAboutEditController.clear();
-
     storeViewModel.initialise();
     storeViewModel.buildState();
-
-
+    isFormChanged = false;
   }
 
   bool enableStoreCode() {
@@ -144,7 +145,9 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
     model.setStatus(store.status);
     model.setStoreLogo(store.storeLogo);
     model.setCreatedDate(store.createDate);
-    setState(() {});
+    setState(() {
+      isFormChanged = false;
+    });
   }
 
   String validateStoreName(String value) {
@@ -166,9 +169,14 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
       _aboutStore = null;
   }
 
-  saveStoreInformation(StoreViewModel model) {
-    if (_formKey.currentState.validate()) {
+
+  Future<bool> saveStoreInformation() async {
+    if (!isFormChanged) {
+      //displayMessage(context, "No changes to save");
+    }
+    else if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      final model = context.read(storeViewModelProvider);
       model.setName(_storeName);
       model.setAboutStore(_aboutStore);
       model.setImageFile(_imageFile);
@@ -181,8 +189,14 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
       if (model.getCreateDate() == null) {
         model.setCreatedDate(DateTime.now());
       }
-      model.saveStore();
+      bool _isSave = await model.saveStore();
+      if (!_isSave) {
+        displayMessage(context, "${model.errorMessage}");
+        return false;
+      }
     }
+    isFormChanged = false;
+    return true;
   }
 
   displayMessage(BuildContext context, String message) {
@@ -215,8 +229,8 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
     return Consumer(
       builder: ((context, watch, _) {
         final storeViewModel = watch(storeViewModelProvider);
-        final branchViewModel = watch(branchViewModelProvider);
-        branchViewModel.initialise();
+        final branchViewModel = context.read(branchViewModelProvider);
+        //branchViewModel.initialise();
         populateIfExists(String storeId) async {
           Store _store = await storeViewModel.getStoreById(storeId);
           if (_store != null) {
@@ -230,17 +244,17 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
 
         return SafeArea(
             child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-              elevation: 3,
-              splashColor: Colors.orangeAccent,
-              isExtended: true,
-              onPressed: () {
-                saveStoreInformation(storeViewModel);
-              },
-              //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-              child: Icon(Icons.save),
-              backgroundColor: Colors.deepOrange),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          // floatingActionButton: FloatingActionButton(
+          //     elevation: 3,
+          //     splashColor: Colors.orangeAccent,
+          //     isExtended: true,
+          //     onPressed: () {
+          //       saveStoreInformation();
+          //     },
+          //     //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+          //     child: Icon(Icons.save),
+          //     backgroundColor: Colors.deepOrange),
+          // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(8),
@@ -248,6 +262,9 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
                   onWillPop: () {
                     storeViewModel.initialise();
                     return Future.value(true);
+                  },
+                  onChanged: () {
+                    isFormChanged = true;
                   },
                   key: _formKey,
                   child: Column(
@@ -260,7 +277,7 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
                               textEditingController: storeCodeEditController,
                               dbValue: storeViewModel.getStoreId(),
                               textInputAction: TextInputAction.next,
-                              textInputFormatter: UpperCaseTextFormatter(),
+                              textInputFormatter: [UpperCaseTextFormatter()],
                               autoFocus: true,
                               enable: enableStoreCode(),
                               width: _width * 0.40,
@@ -271,6 +288,7 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
                               prefixIcon: Icons.account_balance_outlined,
                               prefixIconColor: Colors.orange,
                               maxLength: 6,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8) ,
                               onChangeFunction: (value) {
                                 isRetrieved = false;
                               },
@@ -326,7 +344,7 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
                         errorText: storeAboutValidationErrorText,
                         prefixIcon: Icons.add_business_outlined,
                         prefixIconColor: Colors.orange,
-                        maxLength: 60,
+                        maxLength: 150,
                         minLines: 6,
                         maxLines: 6,
                         onSaveFunction: saveAboutStore,
@@ -368,6 +386,7 @@ class _StoreSetupPageState extends State<StoreSetupPage> with AutomaticKeepAlive
                                           _imageFile = File(_pickedImage.path);
                                           _storeLogo = _pickedImage.path;
                                           storeViewModel.buildState();
+                                          isFormChanged = true;
                                         } else {
                                         }
                                       }

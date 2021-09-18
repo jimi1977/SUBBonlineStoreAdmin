@@ -23,10 +23,12 @@ class StoreBranchSelectionWidget extends ConsumerWidget {
   var _selectedStore;
   String _storeId;
 
+  double width;
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    print("Build Method Called");
     final storeBranchSelectionModel = watch(storeBranchSelectionProvider);
+    width = MediaQuery.of(context).size.width;
 
     Future<List<Store>> _getStoresListFuture() => storeCache.fetch(() {
           return storeBranchSelectionModel.getAllActiveStores();
@@ -72,7 +74,7 @@ class StoreBranchSelectionWidget extends ConsumerWidget {
               //helperText: "Select a store.",
               labelText: "Store",
               selectedValue: storeBranchSelectionModel.storeId,
-              width: 150,
+              width: width * 0.40,
               height: 45,
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
               dropDownValues: items,
@@ -86,7 +88,6 @@ class StoreBranchSelectionWidget extends ConsumerWidget {
     }
 
     Widget buildBranchesList() {
-      print("buildBranchesList");
       return FutureBuilder(
         future: _getStoreBranchesListFuture(storeBranchSelectionModel.storeId),
         builder: (context, AsyncSnapshot<List<StoreBranch>> snapshot) {
@@ -114,7 +115,7 @@ class StoreBranchSelectionWidget extends ConsumerWidget {
               hintText: "Branch",
               labelText: "Branch",
               selectedValue: storeBranchSelectionModel.branchId,
-              width: 150,
+              width: width * 0.45,
               height: 45,
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
               dropDownValues: branches,

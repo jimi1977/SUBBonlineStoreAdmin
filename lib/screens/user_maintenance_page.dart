@@ -101,7 +101,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
   }
 
   bool allowUserRoleChange() {
-    if (loggedInUser.roleCode >= 3) {
+    if (loggedInUser.roleCode >= 3 && (user != null && loggedInUser.uid != user.uid)) {
       return true;
     }
     return false;
@@ -123,6 +123,12 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
 
   bool enableSaveButton() {
     if (_status != "I") {
+      return true;
+    }
+    return false;
+  }
+  bool isSuperUser(StoreUsers user) {
+    if (user.roleCode == 99) {
       return true;
     }
     return false;
@@ -203,7 +209,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
       onChangeFunction: (value) {
         _formChanged = true;
       },
-      width: 180,
+      width: _width * 0.70,
       focusNode: _node.enclosingScope,
       enable: _status != "I" && allowUserRoleChange(),
     );
@@ -347,7 +353,9 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                   physics: ClampingScrollPhysics(),
                   slivers: [
                     SliverToBoxAdapter(
-                      child: StoreBranchSelectionWidget(),
+                      child: Visibility(
+                          visible: isSuperUser(loggedInUser),
+                          child: StoreBranchSelectionWidget()),
                     ),
                     storeSelectionConsumer,
                     SliverToBoxAdapter(
@@ -372,7 +380,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                       prefixIconColor: Colors.orange,
                                       textEditingController: userIdController,
                                       textInputAction: TextInputAction.next,
-                                      textInputFormatter: LowerCaseTextFormatter(),
+                                      textInputFormatter: [LowerCaseTextFormatter()],
                                       maxLength: 25,
                                       autoFocus: true,
                                       enable: _status != "I" && allowUserIdChange(),
@@ -380,7 +388,6 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                       onChangeFunction: (value) {
                                         if (value != null) {
                                           _formChanged = true;
-                                          print("User Id Changed");
                                           _userId = value.toString().toLowerCase();
                                         }
 
@@ -427,43 +434,56 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                   onSaveFunction: userNameSave,
                                   onChangeFunction: (value) {
                                     if (value != null) {
-                                      print("Name Changed");
                                       _formChanged = true;
                                       _userName = value;
                                     }
                                   },
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+
                                   children: [
                                     roleDropDown,
-                                    Column(
-                                      children: [
-                                        if (_dateCreated != null)
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Creation Date:",
-                                                style: kNameTextStyle,
-                                              ),
-                                              Text("${formatDateTimeDDMMYYYYString(_dateCreated)}")
-                                            ],
-                                          ),
-                                        if (_dateInactivated != null)
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "InActivation Date:",
-                                                style: kNameTextStyle,
-                                              ),
-                                              Text("${formatDateTimeDDMMYYYYString(_dateInactivated)}")
-                                            ],
-                                          )
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          if (_dateCreated != null)
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                FittedBox(
+                                                  child: Text(
+                                                    "Creation Date:",
+                                                    style: kNameTextStyle,
+                                                    softWrap: true,
+                                                  ),
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                                SizedBox(width: 10,),
+                                                Text("${formatDateTimeDDMMYYYYString(_dateCreated)}")
+                                              ],
+                                            ),
+                                          if (_dateInactivated != null)
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "InActivation Date:",
+                                                  style: kNameTextStyle,
+                                                ),
+                                                SizedBox(width: 10,),
+                                                Text("${formatDateTimeDDMMYYYYString(_dateInactivated)}")
+                                              ],
+                                            )
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),

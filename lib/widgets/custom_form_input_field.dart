@@ -20,7 +20,7 @@ class CustomInputFormField extends StatefulWidget {
   final TextInputAction textInputAction;
   final TextAlign textAlign;
   final TextDirection textDirection;
-  final TextInputFormatter textInputFormatter;
+  final List<TextInputFormatter> textInputFormatter;
   final bool autoFocus;
   final bool enable;
   final String initialValue;
@@ -97,83 +97,97 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
     super.initState();
   }
 
+
+  // @override
+  // void didUpdateWidget(CustomInputFormField oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (oldWidget.dbValue != widget.dbValue) {
+  //     widget.textEditingController.text = widget.dbValue;
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: widget.padding == null ? EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5) : widget.padding,
-      child: ConstrainedBox(
-        constraints: BoxConstraints.tight(Size(widget.width, widget.height == null ? 65 : widget.height)),
-        child: TextFormField(
-          enableInteractiveSelection: true,
-          textAlign: widget.textAlign == null ? TextAlign.left : widget.textAlign,
-          maxLength: widget.maxLength,
-          enabled: widget.enable,
-          controller: widget.textEditingController,
-          keyboardType: widget.textInputType,
-          obscureText: widget.obscureText ?? false,
-          style: kTextInputStyle,
-          textInputAction: widget.textInputAction,
-          autofocus: widget.autoFocus,
-          focusNode: widget.focusNode != null ? widget.focusNode : null,
-          minLines: widget.minLines == null ? 1 : widget.minLines,
-          maxLines: widget.maxLines == null ? 1 : widget.maxLines,
-          inputFormatters: widget.textInputFormatter == null ? null : [widget.textInputFormatter],
-          decoration: InputDecoration(
-            isDense: true,
-            counter: SizedBox.shrink(),
-            alignLabelWithHint: true,
-            //labelText: hintText,
-            hintText: widget.hintText,
-            helperText: widget.helperText,
-            labelText: widget.labelText != null ? widget.labelText : null,
-            errorText: widget.errorText,
+    return Center(
+      child: Padding(
+        padding: widget.padding == null ? EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5) : widget.padding,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints.tight(Size(widget.width, widget.height == null ? 65 : widget.height)),
+            child: TextFormField(
+              enableInteractiveSelection: true,
+              textAlign: widget.textAlign == null ? TextAlign.left : widget.textAlign,
+              maxLength: widget.maxLength,
+              enabled: widget.enable,
+              controller: widget.textEditingController,
+              keyboardType: widget.textInputType,
+              obscureText: widget.obscureText ?? false,
+              style: kTextInputStyle,
+              textInputAction: widget.textInputAction,
+              autofocus: widget.autoFocus,
+              focusNode: widget.focusNode != null ? widget.focusNode : null,
+              minLines: widget.minLines == null ? 1 : widget.minLines,
+              maxLines: widget.maxLines == null ? 1 : widget.maxLines,
+              inputFormatters: widget.textInputFormatter == null ? null : widget.textInputFormatter,
+              decoration: InputDecoration(
+                isDense: true,
+                counter: SizedBox.shrink(),
+                alignLabelWithHint: true,
+                //labelText: hintText,
+                hintText: widget.hintText,
+                helperText: widget.helperText,
+                labelText: widget.labelText != null ? widget.labelText : null,
+                errorText: widget.errorText,
 
-            //hintStyle: kLineStyle,
-            errorMaxLines: 2,
-            contentPadding: widget.contentPadding != null ? widget.contentPadding : EdgeInsets.symmetric(horizontal: 1, vertical: 8) ,
-            border: _outlineInputBorder(Colors.grey),
-            //UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, style: BorderStyle.solid)),
-            enabledBorder: _outlineInputBorder(Colors.orangeAccent),
-            //UnderlineInputBorder(borderSide: BorderSide(color: Colors.orangeAccent, style: BorderStyle.solid)),
-            focusedBorder: _outlineInputBorder(Colors.blue),
-            //UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue, style: BorderStyle.solid)),
-            errorBorder: _outlineInputBorder(Colors.red),
-            //UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, style: BorderStyle.solid)),
-            disabledBorder: _outlineInputBorder(Colors.grey),
-            //UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, style: BorderStyle.solid)),
-            prefixIcon: widget.prefixIcon != null
-                ? Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 0.0, bottom: 4, end: 0.0),
-                    child: Icon(
-                      widget.prefixIcon,
-                      size: 18,
-                      color: widget.prefixIconColor == null ? Colors.black : widget.prefixIconColor,
-                    ),
-                  )
-                : null,
-            suffixIcon: widget.suffixIcon != null
-                ? Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-                    child: InkWell(
-                      onTap: widget.suffixIconFunction,
-                      child: Icon(
-                        widget.suffixIcon,
-                        size: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                : null,
+                //hintStyle: kLineStyle,
+                errorMaxLines: 2,
+                contentPadding: widget.contentPadding != null ? widget.contentPadding : EdgeInsets.symmetric(horizontal: 1, vertical: 8) ,
+                border: _outlineInputBorder(Colors.grey),
+                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, style: BorderStyle.solid)),
+                enabledBorder: _outlineInputBorder(Colors.orangeAccent),
+                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.orangeAccent, style: BorderStyle.solid)),
+                focusedBorder: _outlineInputBorder(Colors.blue),
+                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue, style: BorderStyle.solid)),
+                errorBorder: _outlineInputBorder(Colors.red),
+                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, style: BorderStyle.solid)),
+                disabledBorder: _outlineInputBorder(Colors.grey),
+                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, style: BorderStyle.solid)),
+                prefixIcon: widget.prefixIcon != null
+                    ? Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 0.0, bottom: 4, end: 0.0),
+                        child: Icon(
+                          widget.prefixIcon,
+                          size: 18,
+                          color: widget.prefixIconColor == null ? Colors.black : widget.prefixIconColor,
+                        ),
+                      )
+                    : null,
+                suffixIcon: widget.suffixIcon != null
+                    ? Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
+                        child: InkWell(
+                          onTap: widget.suffixIconFunction,
+                          child: Icon(
+                            widget.suffixIcon,
+                            size: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
+              onChanged: (value) {
+                if (widget.onChangeFunction != null) {
+                  widget.onChangeFunction(value);
+                }
+              },
+              validator: widget.validateFunction,
+              onSaved: widget.onSaveFunction,
+              onEditingComplete: widget.onFieldSubmittedFunction,
+              onTap: widget.onTapFunction,
+            ),
           ),
-          onChanged: (value) {
-            if (widget.onChangeFunction != null) {
-              widget.onChangeFunction(value);
-            }
-          },
-          validator: widget.validateFunction,
-          onSaved: widget.onSaveFunction,
-          onEditingComplete: widget.onFieldSubmittedFunction,
-          onTap: widget.onTapFunction,
         ),
       ),
     );

@@ -62,17 +62,28 @@ class StoreBranch {
   final String status;
   final GeoPoint geoPoints;
   final DateTime createDate;
+  final double deliveryRange;
+  final double deliveryThreshold;
+  final List<BranchTimings> branchTimings;
+  final StoreDeliveryCharges storeDeliveryCharges;
 
-  StoreBranch(
-      {this.branchId,
-      this.name,
-      this.address,
-      this.suburb,
-      this.city,
-      this.mainBranch,
-      this.status,
-      this.geoPoints,
-      this.createDate});
+
+
+  StoreBranch({
+    @required this.branchId,
+    this.name,
+    this.address,
+    this.suburb,
+    this.city,
+    this.mainBranch,
+    this.status,
+    this.geoPoints,
+    this.createDate,
+    this.deliveryRange,
+    this.deliveryThreshold,
+    this.branchTimings,
+    this.storeDeliveryCharges,
+  });
 
   factory StoreBranch.fromFireStore(DocumentSnapshot map) {
     if (!map.exists) return StoreBranch();
@@ -85,21 +96,34 @@ class StoreBranch {
         mainBranch: map.data()['mainBranch'],
         status: map.data()['status'] as String,
         geoPoints: map.data()['geoPoints'] as GeoPoint,
-        createDate: convertTimeStampToDatetimeWithNull(map.data()['createDate']));
+        createDate: convertTimeStampToDatetimeWithNull(map.data()['createDate']),
+        deliveryRange: map.data()['deliveryRange'],
+        deliveryThreshold : map.data()['deliveryThreshold'],
+        branchTimings: map.data()["branchTimings"] != null
+            ? List.from(map.data()["branchTimings"]).map((e) => BranchTimings.fromMap(e)).toList()
+            : null,
+        storeDeliveryCharges: map.data()["storeDeliveryCharges"]);
   }
 
   factory StoreBranch.fromMap(Map<String, dynamic> map) {
     if (map.isEmpty) return null;
     return new StoreBranch(
-        branchId: map['branchId'] as String,
-        name: map['name'] as String,
-        address: map['address'] as String,
-        suburb: map['suburb'] as String,
-        city: map['city'] as String,
-        mainBranch: map['mainBranch'],
-        status: map['status'] as String,
-        geoPoints: map['geoPoints'] as GeoPoint,
-        createDate: convertTimeStampToDatetimeWithNull(map['createDate']));
+      branchId: map['branchId'] as String,
+      name: map['name'] as String,
+      address: map['address'] as String,
+      suburb: map['suburb'] as String,
+      city: map['city'] as String,
+      mainBranch: map['mainBranch'],
+      status: map['status'] as String,
+      geoPoints: map['geoPoints'] as GeoPoint,
+      createDate: convertTimeStampToDatetimeWithNull(map['createDate']),
+      deliveryRange: map['deliveryRange'],
+        deliveryThreshold: map['deliveryThreshold'],
+      branchTimings: map["branchTimings"] != null
+          ? List.from(map["branchTimings"]).map((e) => BranchTimings.fromMap(e)).toList()
+          : null,
+      storeDeliveryCharges: StoreDeliveryCharges.fromMap(map["storeDeliveryCharges"]),
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -113,13 +137,21 @@ class StoreBranch {
       'mainBranch': this.mainBranch,
       'status': this.status,
       'geoPoints': this.geoPoints,
-      'createDate': this.createDate
+      'createDate': this.createDate,
+      'deliveryRange': this.deliveryRange,
+      'deliveryThreshold': this.deliveryThreshold,
+      'branchTimings': firesStoreBranchTimings(),
+      'storeDeliveryCharges': this.storeDeliveryCharges.toMap(),
     } as Map<String, dynamic>;
   }
 
-  @override
-  String toString() {
-    return 'StoreBranch{branchId: $branchId, name: $name, address: $address, suburb: $suburb, city: $city, mainBranch: $mainBranch, status: $status, geoPoints: $geoPoints}';
+  List<Map<String, dynamic>> firesStoreBranchTimings() {
+    List<Map<String, dynamic>> convertedBranchTimings = [];
+    this.branchTimings.forEach((branchTiming) {
+      BranchTimings _branchTimings = branchTiming;
+      convertedBranchTimings.add(_branchTimings.toMap());
+    });
+    return convertedBranchTimings;
   }
 }
 
@@ -163,8 +195,8 @@ class BranchTimings {
     return new BranchTimings(
       day: map['day'] as String,
       openFlag: map['openFlag'] as String,
-      fromTime: map['fromTime'] as TimeClass,
-      toTime: map['toTime'] as TimeClass,
+      fromTime: TimeClass.fromMap(map['fromTime']),
+      toTime: TimeClass.fromMap(map['toTime']),
     );
   }
 
@@ -173,8 +205,67 @@ class BranchTimings {
     return {
       'day': this.day,
       'openFlag': this.openFlag,
-      'fromTime': this.fromTime,
-      'toTime': this.toTime,
+      'fromTime': this.fromTime.toMap(),
+      'toTime': this.toTime.toMap(),
+    } as Map<String, dynamic>;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BranchTimings &&
+          runtimeType == other.runtimeType &&
+          day == other.day &&
+          openFlag == other.openFlag &&
+          fromTime == other.fromTime &&
+          toTime == other.toTime;
+
+  @override
+  int get hashCode => day.hashCode ^ openFlag.hashCode ^ fromTime.hashCode ^ toTime.hashCode;
+}
+
+class StoreDeliveryCharges {
+  final double flatCharges;
+  final double freeDeliveryAmount;
+
+
+  StoreDeliveryCharges({this.flatCharges, this.freeDeliveryAmount});
+
+  factory StoreDeliveryCharges.fromMap(Map<String, dynamic> map) {
+    return new StoreDeliveryCharges(
+        flatCharges: map['flatCharges'] as double,
+        freeDeliveryAmount: map['freeDeliveryAmount'] as double,
+
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    // ignore: unnecessary_cast
+    return {
+      'flatCharges': this.flatCharges,
+      'freeDeliveryAmount': this.freeDeliveryAmount,
+    } as Map<String, dynamic>;
+  }
+}
+
+class TieredDeliveryCharges {
+  final double distance;
+  final double charges;
+
+  TieredDeliveryCharges({this.distance, this.charges});
+
+  factory TieredDeliveryCharges.fromMap(Map<String, dynamic> map) {
+    return new TieredDeliveryCharges(
+      distance: map['distance'] as double,
+      charges: map['charges'] as double,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    // ignore: unnecessary_cast
+    return {
+      'distance': this.distance,
+      'charges': this.charges,
     } as Map<String, dynamic>;
   }
 }

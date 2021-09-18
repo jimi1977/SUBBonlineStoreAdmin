@@ -29,9 +29,9 @@ class ImageStorageService {
     }
     return _downloadUrl;
   }
-  Future<bool> deleteImage(String imageURL) async {
+  Future<bool> deleteImage(String imageName) async {
     bool deleteStatus = false;
-    Reference storageReference = storage.ref().child(imageURL);
+    Reference storageReference = storage.ref().child(imageName);
 
     await storageReference
         .delete()
@@ -39,5 +39,7 @@ class ImageStorageService {
         .catchError((onError) => errorMessage = onError.toString());
     return deleteStatus;
   }
+
+
 
 }

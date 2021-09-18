@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:subbonline_storeadmin/models/strore_users.dart';
+import 'package:subbonline_storeadmin/screens/brands_setup_page.dart';
 import 'package:subbonline_storeadmin/screens/my_order_details.dart';
 import 'package:subbonline_storeadmin/screens/order_search_page.dart';
 import 'package:subbonline_storeadmin/screens/store_branches_main.dart';
@@ -42,6 +43,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => StoreSetupPage());
       case StoreBranchesMain.id:
         return MaterialPageRoute(builder: (_) => StoreBranchesMain());
+      case BrandsPageSetup.id:
+        return MaterialPageRoute(builder: (_) => BrandsPageSetup());
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

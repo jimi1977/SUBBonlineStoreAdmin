@@ -188,6 +188,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  flutter_keyboard_visibility:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.3.0"
   flutter_phone_direct_caller:
     dependency: "direct main"
     description:
@@ -228,6 +235,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_typeahead:
+    dependency: "direct main"
+    description:
+      name: flutter_typeahead
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.8.8"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -240,6 +254,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.2"
+  geocoding:
+    dependency: "direct main"
+    description:
+      name: geocoding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
+  geocoding_platform_interface:
+    dependency: transitive
+    description:
+      name: geocoding_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   http:
     dependency: transitive
     description:
@@ -310,6 +338,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  models:
+    dependency: "direct main"
+    description:
+      path: "packages/models/"
+      ref: master
+      resolved-ref: "5a40e9126a2e960a688b3b8767fc3a2c5ee6804c"
+      url: "https://github.com/jimi1977/LocalGroceryOnline.git"
+    source: git
+    version: "0.0.1"
   path:
     dependency: transitive
     description:
@@ -373,6 +410,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0+3"
+  services:
+    dependency: "direct main"
+    description:
+      path: "packages/services/"
+      ref: master
+      resolved-ref: "3561bad1b3b006b69efa770139d4e0ba17c8709e"
+      url: "https://github.com/jimi1977/LocalGroceryOnline.git"
+    source: git
+    version: "0.0.1"
   shared_preferences:
     dependency: "direct main"
     description:

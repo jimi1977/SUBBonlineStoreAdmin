@@ -59,10 +59,21 @@ class StoreService {
       errorMessage = e.toString();
       rethrow;
     }
+  }
+
+  saveStoreBranch(String storeId, StoreBranch storeBranch) async {
+    try {
+      await _firestore
+      .collection(ref)
+          .doc(storeId)
+          .collection("branches")
+          .doc(storeBranch.branchId)
+          .set(storeBranch.toMap(),SetOptions(merge: true));
+    } on Exception catch (e) {
+      errorMessage = e.toString();
+      rethrow;
+    }
 
 
   }
-
-
-
 }

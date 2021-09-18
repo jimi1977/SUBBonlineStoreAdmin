@@ -81,7 +81,7 @@ class SubOnlineStoreApp extends StatelessWidget {
               ? loginSuccessful
                   ? SubbOnlineStoreHomePage(title: kAppTitle)
                   : UserLoginPage()
-              : OnboardingPage();
+              : OnBoardingPage();
           //MyHomePage(title: "This is SUBBonline Store App")
         }),
         //signedInBuilder: (_) => MyHomePage(title: "This is SUBBonline Store App"),
@@ -93,7 +93,7 @@ class SubOnlineStoreApp extends StatelessWidget {
   }
 }
 
-class OnboardingPage extends StatelessWidget {
+class OnBoardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

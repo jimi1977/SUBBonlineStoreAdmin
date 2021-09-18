@@ -14,6 +14,8 @@ const kPaymentTypeCash = "Cash";
 
 const kMainPalette =  Color(0xFFFD7465);
 
+const kDefaultDeliveryRange = 5.0;
+
 const kTextInputStyle = TextStyle(fontFamily: kFontFamily, fontSize: 14.0, color: Colors.black);
 const kTextInputStyleGrey = TextStyle(fontFamily: kFontFamily, fontSize: 14.0, color: Colors.grey);
 

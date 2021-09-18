@@ -67,37 +67,56 @@ class _BranchScheduleWidgetState extends State<BranchScheduleWidget> {
     }
   }
 
+  TimeOfDay convert12HourTimeTo24Hour(TimeClass timeClass) {
+    int hour = timeClass.hour;
+    int minute = timeClass.minute;
+
+    if (timeClass.period == "PM") {
+      hour = hour + 12;
+    }
+    return TimeOfDay(hour: hour, minute: minute);
+
+  }
+
   List<Widget> buildStoreTimings(BranchScheduleViewModel model) {
     _branchTimings = model.getBranchTimings();
 
     return List.generate(_branchTimings.length, (index) {
       TimeOfDay _fromTime =
-          TimeOfDay(hour: _branchTimings[index].fromTime.hour, minute: _branchTimings[index].fromTime.minute);
+          TimeOfDay(hour: convert12HourTimeTo24Hour(_branchTimings[index].fromTime).hour, minute: convert12HourTimeTo24Hour(_branchTimings[index].fromTime).minute,);
       TimeOfDay _toTime =
-          TimeOfDay(hour: _branchTimings[index].toTime.hour, minute: _branchTimings[index].toTime.minute);
+      TimeOfDay(hour: convert12HourTimeTo24Hour(_branchTimings[index].toTime).hour, minute: convert12HourTimeTo24Hour(_branchTimings[index].toTime).minute,);
       return Row(
         children: [
-          SizedBox(width: 100, child: Text("${_branchTimings[index].day}")),
-          ConstrainedBox(
-            constraints: BoxConstraints.tight(Size(60, 25)),
-            child: Switch(
-                splashRadius: 15,
-                value: model.openFlag[index] == "Y",
-                onChanged: (value) {
-                  if (value) {
-                    model.openFlag[index] = "Y";
-                  } else {
-                    model.openFlag[index] = "N";
-                  }
-                  model.buildState();
-                }),
+          SizedBox(
+            width: 73,
+              child: Text("${_branchTimings[index].day}")),
+          Expanded(
+            flex: 2,
+            child: ConstrainedBox(
+              constraints: BoxConstraints.tight(Size(60, 25)),
+              child: Switch(
+                  splashRadius: 15,
+                  value: model.openFlag[index] == "Y",
+                  onChanged: (value) {
+                    if (value) {
+                      model.openFlag[index] = "Y";
+                    } else {
+                      model.openFlag[index] = "N";
+                    }
+                    model.buildState();
+                  }),
+            ),
           ),
-          OpenCLoseTimingWidget(
-            index: index,
-            fromTime: _fromTime,
-            toTime: _toTime,
-            enable: model.openFlag[index] == "Y",
-            onChangeFunction: onTimingsChange,
+          Expanded(
+            flex: 6,
+            child: OpenCLoseTimingWidget(
+              index: index,
+              fromTime: _fromTime,
+              toTime: _toTime,
+              enable: model.openFlag[index] == "Y",
+              onChangeFunction: onTimingsChange,
+            ),
           )
         ],
       );
@@ -118,7 +137,7 @@ class _BranchScheduleWidgetState extends State<BranchScheduleWidget> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "Store Open/Close Timings",
-                  style: kNameTextStyle,
+                  style: kNameTextStyle15,
                 ),
               ),
             ),
@@ -145,7 +164,7 @@ class OpenCLoseTimingWidget extends StatefulWidget {
   final Function onChangeFunction;
   final bool enable;
 
-  const OpenCLoseTimingWidget({Key key, this.index, this.fromTime, this.toTime, this.onChangeFunction, this.enable})
+  OpenCLoseTimingWidget({Key key, this.index, this.fromTime, this.toTime, this.onChangeFunction, this.enable})
       : super(key: key);
 
   @override
@@ -162,9 +181,22 @@ class _OpenCLoseTimingWidgetState extends State<OpenCLoseTimingWidget> {
 
   @override
   void initState() {
+    super.initState();
     selectedFromTime = widget.fromTime;
     selectedToTime = widget.toTime;
-    super.initState();
+  }
+
+
+  @override
+  void didUpdateWidget(OpenCLoseTimingWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.fromTime != widget.fromTime) {
+      selectedFromTime = widget.fromTime;
+    }
+    else if  (oldWidget.toTime != widget.toTime) {
+      selectedToTime = widget.toTime;
+    }
+
   }
 
   Future<void> _selectTime(BuildContext context, TextEditingController timeController, TimeOfDay selectedTime, BranchTimingEnum branchTimingEnum) async {
@@ -214,11 +246,12 @@ class _OpenCLoseTimingWidgetState extends State<OpenCLoseTimingWidget> {
               child: CustomInputFormField(
                   textEditingController: fromTimeController,
                   //textInputType: TextInputType.,
+                  textInputType: TextInputType.numberWithOptions(),
                   hintText: "From Time",
                   //initialValue: "00 : 00",
                   //helperText: "Please enter user login id.",
                   obscureText: false,
-                  dbValue: formatTime(widget.fromTime),
+                  dbValue: formatTime(selectedFromTime),
                   enable: true,
                   maxLength: 25,
                   autoFocus: false,
@@ -248,7 +281,7 @@ class _OpenCLoseTimingWidgetState extends State<OpenCLoseTimingWidget> {
                   obscureText: false,
                   //prefixIcon: Icons.login,
                   //suffixIcon: Icons.close,
-                  dbValue: formatTime(widget.toTime),
+                  dbValue: formatTime(selectedToTime),
                   enable: true,
                   autoFocus: false,
                   maxLength: 25,
