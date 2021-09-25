@@ -31,6 +31,20 @@ class ImageUploaded extends ImageUploadState {
   @override
   int get hashCode => imageUpload.hashCode;
 }
+class ImageRemove extends ImageUploadState {
+  final ImageUpload imageUpload;
+
+  ImageRemove({this.imageUpload});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ImageUploaded && runtimeType == other.runtimeType && imageUpload == other.imageUpload;
+
+  @override
+  int get hashCode => imageUpload.hashCode;
+
+}
 
 class ImageUploadError extends ImageUploadState {
   final String errorMessage;
@@ -80,12 +94,26 @@ class ImageUploadViewModel extends StateNotifier<ImageUploadState> {
     if (newState != null && newState != previousState) {
       return true;
     }
+    if (newState == null && previousState != null && state is ImageRemove) {
+      return true;
+    }
     return false;
+  }
+
+  bool isImageAvailable() {
+    if (previousState == null && newState == null) {
+      return false;
+    }
+    return true;
   }
 
   setImageFile(File imageFile) {
     state = ImageUploaded(imageUpload: ImageUpload(imageFile: imageFile));
     newState = state;
+  }
+
+  removeImage() {
+    state = ImageRemove(imageUpload: null);
   }
 
   Future<String> uploadImage(String fileName, String bucket) async {
@@ -106,7 +134,17 @@ class ImageUploadViewModel extends StateNotifier<ImageUploadState> {
       } on Exception catch (e) {
         state = ImageUploadError(e.toString());
       }
-    } else {
+    }
+    else if (state is ImageRemove) {
+      if (previousState != null && previousState.imageUpload.imageUrl != null) {
+        bool deleteStatus = await removeImageFromBucket(previousState.imageUpload.imageUrl);
+        if (!deleteStatus) {
+          throw imageStorageService.errorMessage;
+        }
+        print("Remove Image....");
+      }
+    }
+    else {
       state = ImageUploadError("Image File is not available to upload");
     }
     return imageDownloadUrl;

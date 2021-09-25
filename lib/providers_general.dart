@@ -5,6 +5,7 @@ import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:subbonline_storeadmin/services/customer_service.dart';
 import 'package:subbonline_storeadmin/services/geocoding_service.dart';
 import 'package:subbonline_storeadmin/services/image_storage_servcie.dart';
+import 'package:subbonline_storeadmin/services/main_category_service.dart';
 import 'package:subbonline_storeadmin/services/order_service.dart';
 import 'package:subbonline_storeadmin/services/store_service.dart';
 import 'package:subbonline_storeadmin/services/store_users_service.dart';
@@ -35,6 +36,8 @@ final pastOrdersProvider = ChangeNotifierProvider<PastOrdersViewModel>((ref) => 
 final branchScheduleViewProvider = ChangeNotifierProvider<BranchScheduleViewModel>((ref) => BranchScheduleViewModel());
 
 final imageServiceProvider = Provider<ImageStorageService>((ref) => ImageStorageService());
+
+final mainCategoryServiceProvider = Provider<MainCategoryService>((ref) => MainCategoryService());
 
 final geoCodingServiceProvider = Provider<GeoCodingService>((ref) => GeoCodingService());
 

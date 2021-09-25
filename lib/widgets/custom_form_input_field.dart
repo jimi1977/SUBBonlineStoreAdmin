@@ -213,6 +213,7 @@ class CustomDropDownWidget extends StatefulWidget {
   final EdgeInsets contentPadding;
   final FocusNode focusNode;
   final bool enable;
+  final bool underLineInputBorder;
 
   CustomDropDownWidget(
       {Key key,
@@ -233,7 +234,8 @@ class CustomDropDownWidget extends StatefulWidget {
       this.padding,
       this.contentPadding,
       this.focusNode,
-      this.enable});
+      this.enable,
+      this.underLineInputBorder});
 
 
   @override
@@ -244,15 +246,22 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
   String _validationErrorText;
   dynamic _selectedValue;
 
-  OutlineInputBorder _outlineInputBorder(Color borderColor) {
-    return OutlineInputBorder(
-        borderSide: BorderSide(color: borderColor, width: 1),
-        borderRadius: BorderRadius.only(
-          bottomRight: Radius.circular(3.0),
-          bottomLeft: Radius.circular(3.0),
-          topLeft: Radius.circular(3.0),
-          topRight: Radius.circular(3.0),
-        ));
+
+  UnderlineInputBorder _underLineInputBorder(Color borderColor) {
+    return UnderlineInputBorder(
+      borderSide: BorderSide(color: borderColor, width: 1)
+    );
+  }
+
+  OutlineInputBorder _outlineInputBorder(Color borderColor,) {
+      return OutlineInputBorder(
+          borderSide: BorderSide(color: borderColor, width: 1),
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(3.0),
+            bottomLeft: Radius.circular(3.0),
+            topLeft: Radius.circular(3.0),
+            topRight: Radius.circular(3.0),
+          ));
   }
 
   _validateDropDownValue(dynamic value) {
@@ -313,11 +322,11 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                         color: widget.prefixIconColor == null ? Colors.black : widget.prefixIconColor,
                       )
                     : null,
-                focusedErrorBorder: _outlineInputBorder(Colors.red),
-                enabledBorder: _outlineInputBorder(Colors.orangeAccent),
-                focusedBorder: _outlineInputBorder(Colors.blue),
-                errorBorder: _outlineInputBorder(Colors.red),
-                disabledBorder: _outlineInputBorder(Colors.grey),
+                focusedErrorBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.red) : _outlineInputBorder(Colors.red),
+                enabledBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.orangeAccent) : _outlineInputBorder(Colors.orangeAccent),
+                focusedBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.blue) : _outlineInputBorder(Colors.blue),
+                errorBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.red) : _outlineInputBorder(Colors.red),
+                disabledBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.grey) :  _outlineInputBorder(Colors.grey),
               ),
               child: Container(
                 padding: EdgeInsets.only(left: 8),

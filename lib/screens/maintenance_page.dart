@@ -70,8 +70,9 @@ class MaintenancePage extends StatelessWidget {
       backGroundColor: Colors.brown,
       menuIcon: Icons.map,
       menuName: "Main Categories",
+      routeName: 'main_category_setup_page',
       onTapAction: () {},
-      enabled: false,
+      enabled: true,
     ),
     _MenuItemTile(
       backGroundColor: Colors.deepOrange,

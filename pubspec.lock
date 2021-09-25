@@ -343,7 +343,7 @@ packages:
     description:
       path: "packages/models/"
       ref: master
-      resolved-ref: "5a40e9126a2e960a688b3b8767fc3a2c5ee6804c"
+      resolved-ref: c7b4512cbe0b9e773eeaeffd86352e9ee5dbdfa8
       url: "https://github.com/jimi1977/LocalGroceryOnline.git"
     source: git
     version: "0.0.1"
@@ -415,7 +415,7 @@ packages:
     description:
       path: "packages/services/"
       ref: master
-      resolved-ref: "3561bad1b3b006b69efa770139d4e0ba17c8709e"
+      resolved-ref: c7b4512cbe0b9e773eeaeffd86352e9ee5dbdfa8
       url: "https://github.com/jimi1977/LocalGroceryOnline.git"
     source: git
     version: "0.0.1"

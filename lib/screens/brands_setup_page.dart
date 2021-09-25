@@ -76,7 +76,7 @@ class BrandsPageSetup extends ConsumerWidget {
     _brandDescription = value;
   }
 
-  saveBrand(BuildContext context) {
+  saveBrand(BuildContext context) async {
     final model = context.read(brandViewModelProvider.notifier);
     if (!isFormChanged && !model.isImageChanged() ) {
       displayMessage(context, "There is no change to save");
@@ -86,7 +86,7 @@ class BrandsPageSetup extends ConsumerWidget {
       _formKey.currentState.save();
 
        //model.state = BrandSave(Brands(brandId: ))
-      model.saveBrand(
+      await model.saveBrand(
         _brandId,
         _brandName,
         _brandDescription,
@@ -313,56 +313,7 @@ class BrandsPageSetup extends ConsumerWidget {
       );
     }
 
-    Widget buildImageUploadWidget() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 0, top: 5, left: 12, right: 1),
-            child: OutlinedButton(
-                style: TextButton.styleFrom(
-                    primary: enableBrandLogo() ? Colors.blue : Colors.grey,
-                    side: BorderSide(color: enableBrandLogo() ? Colors.blue : Colors.grey),
-                    minimumSize: Size(60, 28),
-                    padding: EdgeInsets.all(4)),
-                onPressed: enableBrandLogo()
-                    ? () async {
-                        final _pickedImage = await _picker.pickImage(source: ImageSource.gallery);
-                        if (_pickedImage.path != null) {
-                          _imageFile = File(_pickedImage.path);
-                          _brandLogo = _pickedImage.path;
-                          //storeViewModel.buildState();
-                          //isFormChanged = true;
-                        } else {}
-                      }
-                    : null,
-                child: Text(
-                  "Upload Image",
-                  style: TextStyle(color: enableBrandLogo() ? Colors.blue : Colors.grey),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 12, right: 1),
-            child: Container(
-              constraints: BoxConstraints(maxWidth: 386, maxHeight: 230),
-              width: _width * .95,
-              height: _width * .70,
-              decoration: BoxDecoration(
-                  border:
-                      Border.all(color: enableBrandLogo() ? Colors.orange.shade300 : Colors.grey.shade500, width: 1.2),
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
-                  image: DecorationImage(
-                      fit: BoxFit.contain,
-                      image: model.imageUrl != null
-                          ? NetworkImage(model.imageUrl)
-                          : _imageFile == null
-                              ? AssetImage('images/no-image-available.png')
-                              : FileImage(_imageFile))),
-            ),
-          ),
-        ],
-      );
-    }
+
 
     Widget buildImageUploadCustomWidget() {
       return Padding(
@@ -395,8 +346,8 @@ class BrandsPageSetup extends ConsumerWidget {
         ),
         actions: [
           InkWell(
-            onTap: () {
-              saveBrand(context);
+            onTap: () async {
+              await saveBrand(context);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
