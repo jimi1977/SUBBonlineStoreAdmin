@@ -291,6 +291,7 @@ class BranchSetupPageState extends State<BranchSetupPage> with AutomaticKeepAliv
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -379,7 +380,7 @@ class BranchSetupPageState extends State<BranchSetupPage> with AutomaticKeepAliv
                           textInputAction: TextInputAction.next,
                           autoFocus: true,
                           enable: enableName(),
-                          width: _width * 0.55,
+                          width: _width * 0.95,
                           hintText: "Area/Suburb",
                           labelText: suburbAboutEditController.text.isEmpty ? null : "Area/Suburb",
                           helperText: "Please enter branch area.",
@@ -555,7 +556,7 @@ class BranchSetupPageState extends State<BranchSetupPage> with AutomaticKeepAliv
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(2.0),
                   child: BranchScheduleWidget(),
                 ),
                 SizedBox(height: 50,)

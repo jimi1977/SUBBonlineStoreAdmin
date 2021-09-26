@@ -415,7 +415,7 @@ packages:
     description:
       path: "packages/services/"
       ref: master
-      resolved-ref: c7b4512cbe0b9e773eeaeffd86352e9ee5dbdfa8
+      resolved-ref: "7c59cc576bf44589a6a55af1f6d73065fb6aed06"
       url: "https://github.com/jimi1977/LocalGroceryOnline.git"
     source: git
     version: "0.0.1"

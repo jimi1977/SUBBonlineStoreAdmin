@@ -436,27 +436,30 @@ class MainCategorySetupPage extends StatelessWidget {
 
 
       Widget buildInternalCategoryDropDown() {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 5, top: 5, left: 8, right: 1),
-          child: CustomDropDownWidget(
-            key: _formKey,
-            hintText: "Internal Category Code",
-            errorText: _intCategoryValidationErrorText,
-            helperText: "Please select Internal Category Code.",
-            labelText: "Internal Category Code",
-            prefixIcon: Icons.qr_code_sharp,
-            prefixIconColor: Colors.orange,
-            dropDownValues: getIntCategoryCodesDropDownItems(),
-            selectedValue: _selectedIntCategory,
-            validatorFunction: validateIntCategoryCode,
-            setValueFunction: saveIntCategoryCode,
-            onChangeFunction: (value) {
-              //_formChanged = true;
-            },
-            width: _width * 0.70,
-            height: 67,
-            focusNode: _intCatCodeFocusNode,
-            enable: true,
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 75, maxWidth: 300),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 8, right: 1),
+            child: CustomDropDownWidget(
+              key: _formKey,
+              hintText: "Internal Category Code",
+              errorText: _intCategoryValidationErrorText,
+              helperText: "Please select Internal Category Code.",
+              labelText: "Internal Category Code",
+              prefixIcon: Icons.qr_code_sharp,
+              prefixIconColor: Colors.orange,
+              dropDownValues: getIntCategoryCodesDropDownItems(),
+              selectedValue: _selectedIntCategory,
+              validatorFunction: validateIntCategoryCode,
+              setValueFunction: saveIntCategoryCode,
+              onChangeFunction: (value) {
+                //_formChanged = true;
+              },
+              width: _width * 0.70,
+              height: 67,
+              focusNode: _intCatCodeFocusNode,
+              enable: true,
+            ),
           ),
         );
       }
@@ -515,7 +518,7 @@ class MainCategorySetupPage extends StatelessWidget {
             fit: StackFit.passthrough,
             children: [
               Align(
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
                 child: ImageUploadWidget(
                   width: _width * 0.95,
                   height: _width * 0.48,
@@ -538,7 +541,9 @@ class MainCategorySetupPage extends StatelessWidget {
         child: SafeArea(
           child: Scaffold(
             appBar: AppBar(
-              title: Text("Main Category Maintenance"),
+              title: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text("Main Category Maintenance")),
               leading: InkWell(
                 child: Icon(Icons.arrow_back),
                 onTap: () async {

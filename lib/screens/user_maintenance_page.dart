@@ -374,6 +374,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                   children: [
                                     CustomInputFormField(
                                       hintText: "User Id",
+                                      labelText: "User Id",
                                       helperText: "Please enter user id.",
                                       errorText: userValidationErrorText,
                                       prefixIcon: Icons.account_box,
@@ -381,7 +382,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                       textEditingController: userIdController,
                                       textInputAction: TextInputAction.next,
                                       textInputFormatter: [LowerCaseTextFormatter()],
-                                      maxLength: 25,
+                                      maxLength: 40,
                                       autoFocus: true,
                                       enable: _status != "I" && allowUserIdChange(),
                                       width: _width * 0.60,
@@ -411,7 +412,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                     ),
                                     if (_status != null)
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8 , vertical: 0),
                                         child: Text(
                                           "${_status == "A" ? "Active" : "Inactive"}",
                                           style: _status == "A" ? k14BoldBlue : k14BoldRed,
@@ -421,6 +422,7 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                 ),
                                 CustomInputFormField(
                                   hintText: "Name",
+                                  labelText: "Name",
                                   helperText: "Please enter user name.",
                                   prefixIcon: Icons.drive_file_rename_outline,
                                   prefixIconColor: Colors.orange,
@@ -444,9 +446,12 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
 
                                   children: [
-                                    roleDropDown,
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
+                                      child: roleDropDown,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisAlignment: MainAxisAlignment.start,

@@ -89,7 +89,7 @@ class _BranchScheduleWidgetState extends State<BranchScheduleWidget> {
       return Row(
         children: [
           SizedBox(
-            width: 73,
+            width: 72,
               child: Text("${_branchTimings[index].day}")),
           Expanded(
             flex: 2,
@@ -109,7 +109,7 @@ class _BranchScheduleWidgetState extends State<BranchScheduleWidget> {
             ),
           ),
           Expanded(
-            flex: 6,
+            flex: 7,
             child: OpenCLoseTimingWidget(
               index: index,
               fromTime: _fromTime,
@@ -234,6 +234,7 @@ class _OpenCLoseTimingWidgetState extends State<OpenCLoseTimingWidget> {
 
   buildOpenCloseTimeWidget(int index) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         //Container(width: 40, child: Text("Time")),
         InkWell(
@@ -261,7 +262,7 @@ class _OpenCLoseTimingWidgetState extends State<OpenCLoseTimingWidget> {
                   // },
                   contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 6),
                   height: 35,
-                  width: 85),
+                  width: 76),
             ),
           ),
         ),
@@ -288,7 +289,7 @@ class _OpenCLoseTimingWidgetState extends State<OpenCLoseTimingWidget> {
                   textInputAction: TextInputAction.next,
                   contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 6),
                   height: 35,
-                  width: 85),
+                  width: 76),
             ),
           ),
         ),
