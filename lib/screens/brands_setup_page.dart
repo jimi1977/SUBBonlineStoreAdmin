@@ -320,7 +320,7 @@ class BrandsPageSetup extends ConsumerWidget {
         padding: const EdgeInsets.all(5.0),
         child: ImageUploadWidget(
           width: _width * 0.95,
-          height: _width * 0.65,
+          height: _width * 0.50,
           enable: brandsEditingController.text.length > 1,
         ),
       );

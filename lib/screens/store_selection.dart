@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subbonline_storeadmin/constants.dart';
-import 'package:subbonline_storeadmin/models/store.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/viewmodels/onboarding_view_model.dart';
 
 class StoreSelection extends StatefulWidget {

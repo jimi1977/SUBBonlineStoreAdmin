@@ -4,13 +4,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:models/shelf.dart';
 import 'package:subbonline_storeadmin/repository/cities_repository.dart';
 import 'package:subbonline_storeadmin/viewmodels/branch_view_model.dart';
 import 'package:subbonline_storeadmin/widgets/branch_schedule.dart';
 
 import '../constants.dart';
 import '../enums/enum_confirmation.dart';
-import '../models/store.dart';
+
 import '../models/strore_users.dart';
 import '../utility/text_input_formatter.dart';
 import '../utility/utility_functions.dart';
@@ -392,6 +393,7 @@ class BranchSetupPageState extends State<BranchSetupPage> with AutomaticKeepAliv
                           onSaveFunction: saveSuburbAddress,
                         ),
                         CustomDropDownWidget(
+                          padding: const EdgeInsets.only(bottom: 1, top: 1, left: 12, right: 5),
                           enable: enableName(),
                           hintText: "City",
                           //helperText: "Select a store.",
@@ -405,8 +407,6 @@ class BranchSetupPageState extends State<BranchSetupPage> with AutomaticKeepAliv
                           validatorFunction: validateCity,
                           onChangeFunction: citySave,
                         ),
-
-
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Divider(height: 3, thickness: 3,),

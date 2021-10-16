@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:models/shelf.dart';
 import 'package:subbonline_storeadmin/models/strore_users.dart';
 import 'package:subbonline_storeadmin/utility/text_input_formatter.dart';
 import 'package:subbonline_storeadmin/viewmodels/branch_view_model.dart';
@@ -10,7 +11,7 @@ import 'package:subbonline_storeadmin/viewmodels/store_view_model.dart';
 import 'package:subbonline_storeadmin/widgets/custom_form_input_field.dart';
 
 import '../constants.dart';
-import '../models/store.dart';
+
 import '../viewmodels/user_login_view_model.dart';
 
 class StoreSetupPage extends StatefulWidget {

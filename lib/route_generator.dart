@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:subbonline_storeadmin/models/strore_users.dart';
 import 'package:subbonline_storeadmin/screens/brands_setup_page.dart';
+import 'package:subbonline_storeadmin/screens/category_setup_page.dart';
 import 'package:subbonline_storeadmin/screens/main_category_setup_page.dart';
 import 'package:subbonline_storeadmin/screens/my_order_details.dart';
 import 'package:subbonline_storeadmin/screens/order_search_page.dart';
+import 'package:subbonline_storeadmin/screens/product_setup_main_page_.dart';
 import 'package:subbonline_storeadmin/screens/store_branches_main.dart';
 import 'package:subbonline_storeadmin/screens/store_orders.dart';
 import 'package:subbonline_storeadmin/screens/store_setup_page.dart';
@@ -48,6 +50,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => BrandsPageSetup());
       case MainCategorySetupPage.id:
         return MaterialPageRoute(builder: (_) => MainCategorySetupPage());
+      case CategorySetupPage.id:
+        return MaterialPageRoute(builder: (_) => CategorySetupPage());
+      case ProductSetupMainPage.id:
+        return MaterialPageRoute(builder: (_) => ProductSetupMainPage());
 
 
       default:

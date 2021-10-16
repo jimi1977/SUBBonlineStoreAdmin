@@ -2,7 +2,7 @@ import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:subbonline_storeadmin/models/store.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/services/shared_preferences_service.dart';
 import 'package:subbonline_storeadmin/viewmodels/store_branch_selection_view_model.dart';

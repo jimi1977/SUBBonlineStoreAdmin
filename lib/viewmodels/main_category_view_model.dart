@@ -118,7 +118,7 @@ class MainCategoryViewModel extends StateNotifier<MainCategoryState> {
     state = MainCategoryRebuild();
   }
 
-  Future<void> saveMainProduct({
+  Future<void> saveMainCategory({
     String id,
     String name,
     String type,

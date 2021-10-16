@@ -51,7 +51,7 @@ class ImageUploadWidget extends StatelessWidget {
 
   pickNewImage(BuildContext context, String imageUrl, File imageFile,) async {
     String _storeLogo;
-    final _pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    final _pickedImage = await _picker.pickImage(source: ImageSource.gallery,);
     if (_pickedImage != null && _pickedImage.path != null) {
       imageFile = File(_pickedImage.path);
       _storeLogo = _pickedImage.path;
@@ -66,15 +66,15 @@ class ImageUploadWidget extends StatelessWidget {
   Widget buildImageUploadWidget(BuildContext context, String imageUrl, File imageFile, bool enable) {
     String _storeLogo;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 380, maxWidth: 450),
+      constraints: BoxConstraints(maxHeight: 450, maxWidth: 550),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
             padding: EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5),
             child: Container(
-              width: width,
-              height: height,
+              width: width ,
+              height: height * 0.90,
               decoration: BoxDecoration(
                   border: Border.all(color: enable ? Colors.orange.shade300 : Colors.grey.shade500, width: 1.2),
                   borderRadius: BorderRadius.all(Radius.circular(3)),
@@ -121,7 +121,7 @@ class ImageUploadWidget extends StatelessWidget {
                         minimumSize: Size(60, 28),
                         padding: EdgeInsets.all(4)),
                     onPressed:() async {
-                      await pickNewImage(context,imageUrl,imageFile);
+                      await pickNewImage(context,imageUrl,imageFile, );
                     },
                     child: Text(
                       imageUrl == null? "Upload Image" : "Change Image",

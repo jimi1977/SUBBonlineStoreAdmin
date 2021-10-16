@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 const kAppTitle = "SUBBonline Store";
 
+const kStoreKey = "SUBO";
+
 const kFontFamily = 'Roboto';
 
 const kGlobalCurrency = "Rs.";
@@ -25,6 +27,9 @@ const kNameTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 14.0, fontWe
 const kNameTextStyle15 = TextStyle(fontFamily: kFontFamily, fontSize: 15.0, fontWeight: FontWeight.w500);
 
 const kNumberTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 13.0,);
+const kErrorTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 12.0, color: Colors.red);
+
+
 
 const kOrderTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 14.0,color: Colors.green,fontWeight: FontWeight.bold);
 
@@ -43,3 +48,18 @@ const kOrderStatusTextStyleR = TextStyle(fontFamily: kFontFamily, fontSize: 16.0
 
 const kLineStyle =
 TextStyle(fontFamily: kFontFamily, fontSize: 14.0, color: Colors.grey);
+
+
+OutlineInputBorder outlineInputBorder(Color borderColor) {
+  return OutlineInputBorder(
+      borderSide: BorderSide(
+        color: borderColor,
+        width: 1,
+      ),
+      borderRadius: BorderRadius.only(
+        bottomRight: Radius.circular(3.0),
+        bottomLeft: Radius.circular(3.0),
+        topLeft: Radius.circular(3.0),
+        topRight: Radius.circular(3.0),
+      ));
+}

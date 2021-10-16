@@ -195,7 +195,7 @@ class MainCategorySetupPage extends StatelessWidget {
             maskType: EasyLoadingMaskType.clear,
           );
           try {
-            await model.saveMainProduct(
+            await model.saveMainCategory(
                 id: _mainCategoryId,
                 name: _mainCategoryName,
                 advertText: _advertisingText,
@@ -477,7 +477,7 @@ class MainCategorySetupPage extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 30, top: 30, bottom: 20),
+            padding: const EdgeInsets.only(left: 20.0, right: 30, top: 10, bottom: 40),
             child: Text(
               advertisingTextEditingController.text,
               style: TextStyle(color: textColor),
@@ -514,19 +514,23 @@ class MainCategorySetupPage extends StatelessWidget {
       Widget buildImageUploadCustomWidget() {
         return Padding(
           padding: const EdgeInsets.all(5.0),
-          child: Stack(
-            fit: StackFit.passthrough,
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: ImageUploadWidget(
-                  width: _width * 0.95,
-                  height: _width * 0.48,
-                  enable: mainCategoryEditingController.text.length > 1,
+          child: Container(
+            width: 550,
+            height: _width * 0.60,
+            child: Stack(
+              fit: StackFit.passthrough,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ImageUploadWidget(
+                    width: _width * 0.95,
+                    height: _width * 0.45,
+                    enable: mainCategoryEditingController.text.length > 1,
+                  ),
                 ),
-              ),
-              buildDisplayAdvertisingText()
-            ],
+                buildDisplayAdvertisingText()
+              ],
+            ),
           ),
         );
       }

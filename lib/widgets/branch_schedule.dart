@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:models/shelf.dart';
 import 'package:subbonline_storeadmin/viewmodels/branch_schedule_view_model.dart';
 
 import '../constants.dart';
-import '../models/store.dart';
 import '../providers_general.dart';
 import '../utility/utility_functions.dart';
 import 'custom_form_input_field.dart';

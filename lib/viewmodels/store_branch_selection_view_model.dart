@@ -4,9 +4,9 @@
 
 
 import 'package:flutter/foundation.dart';
-import 'package:subbonline_storeadmin/models/store.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/services/shared_preferences_service.dart';
-import 'package:subbonline_storeadmin/services/store_service.dart';
+import 'package:services/store_service.dart';
 
 class StoreBranchSelectionViewModel extends ChangeNotifier {
   StoreBranchSelectionViewModel({@required this.storeService, @required this.sharedPreferencesService}):

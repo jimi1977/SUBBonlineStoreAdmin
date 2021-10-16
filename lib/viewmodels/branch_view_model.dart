@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:models/shelf.dart';
+import 'package:services/shelf.dart';
 import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/services/geocoding_service.dart';
 import 'package:subbonline_storeadmin/viewmodels/branch_schedule_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/store_view_model.dart';
 
-import '../models/store.dart';
 import '../providers_general.dart';
 import '../services/shared_preferences_service.dart';
-import '../services/store_service.dart';
+
 
 final branchViewModelProvider = ChangeNotifierProvider((ref) => BranchViewModel(
     ref.watch(storeServiceProvider),

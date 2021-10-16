@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:subbonline_storeadmin/models/store.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/services/shared_preferences_service.dart';
-import 'package:subbonline_storeadmin/services/store_service.dart';
+import 'package:services/store_service.dart';
 
 final onboardingViewModelProvider = StateNotifierProvider<OnboardingViewModel, bool>((ref) {
   final sharedPreferencesService = ref.watch(sharedPreferencesServiceProvider);

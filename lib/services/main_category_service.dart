@@ -5,6 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:subbonline_storeadmin/models/main_category.dart';
 import 'package:uuid/uuid.dart';
+import 'package:subbonline_storeadmin/services/firestore_extensions.dart';
 
 class MainCategoryService {
 
@@ -39,6 +40,21 @@ class MainCategoryService {
     }
   }
 
+  Future<List<MainCategory>> getMainCategoriesByNameWithLimitCached(String name, int limit) async {
+    assert(limit!=null);
+    try {
+      QuerySnapshot querySnapShot = await _firestore.collection(ref).
+      where('name', isGreaterThanOrEqualTo: name)
+          .orderBy('name')
+          .limit(limit)
+          .getSavy();
+      var _mainCategories = querySnapShot.docs.map((snapshot) => MainCategory.fromFireStore(snapshot));
+      return _mainCategories.toList();
+    } on Exception catch (e) {
+      rethrow;
+    }
+  }
+
   Future<MainCategory> getMainCategoryByName(String name) async {
     try {
       QuerySnapshot querySnapShot = await _firestore.collection(ref).
@@ -52,6 +68,19 @@ class MainCategoryService {
 
     } on Exception catch (e) {
 
+      rethrow;
+    }
+  }
+
+  Future<MainCategory> getMainCategoryById(String id) async {
+
+    try {
+      var snapShot = await _firestore.collection(ref).
+      doc(id).get();
+      if (snapShot.exists) {
+        return MainCategory.fromFireStore(snapShot);
+      }
+    } on Exception catch (e) {
       rethrow;
     }
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:models/shelf.dart';
 
-import '../models/store.dart';
 import '../utility/utility_functions.dart';
 
 class BranchScheduleViewModel extends ChangeNotifier {

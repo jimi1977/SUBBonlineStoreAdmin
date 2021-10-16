@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subbonline_storeadmin/constants.dart';
-import 'package:subbonline_storeadmin/models/store.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/viewmodels/onboarding_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/progress_bar_view_model.dart';

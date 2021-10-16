@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:services/brand_service.dart';
+import 'package:services/category_service.dart';
+import 'package:services/shelf.dart';
 import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:subbonline_storeadmin/services/customer_service.dart';
 import 'package:subbonline_storeadmin/services/geocoding_service.dart';
 import 'package:subbonline_storeadmin/services/image_storage_servcie.dart';
 import 'package:subbonline_storeadmin/services/main_category_service.dart';
 import 'package:subbonline_storeadmin/services/order_service.dart';
-import 'package:subbonline_storeadmin/services/store_service.dart';
+import 'package:services/store_service.dart';
 import 'package:subbonline_storeadmin/services/store_users_service.dart';
 import 'package:subbonline_storeadmin/viewmodels/branch_schedule_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/image_upload_view_model.dart';
@@ -39,7 +41,17 @@ final imageServiceProvider = Provider<ImageStorageService>((ref) => ImageStorage
 
 final mainCategoryServiceProvider = Provider<MainCategoryService>((ref) => MainCategoryService());
 
+final categoryServiceProvider = Provider<CategoryService>((ref) => CategoryService());
+
 final geoCodingServiceProvider = Provider<GeoCodingService>((ref) => GeoCodingService());
+
+final translatorServiceProvider = Provider<TranslatorService>((ref) => TranslatorService(fromLanguageCode: 'en', toLanguageCode: 'ur'));
+
+final productServiceProvider = Provider<ProductService>((ref) =>
+    ProductService(storeService: ref.watch(storeServiceProvider),
+        brandService: ref.watch(brandServiceProvider),
+        categoryService: ref.watch(categoryServiceProvider))
+);
 
 final imageUploadProvider = StateNotifierProvider<ImageUploadViewModel, ImageUploadState>((ref) =>
     ImageUploadViewModel(ref.watch(imageServiceProvider))

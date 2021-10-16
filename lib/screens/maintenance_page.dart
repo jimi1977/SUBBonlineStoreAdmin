@@ -43,6 +43,7 @@ class MaintenancePage extends StatelessWidget {
       menuName: "Products",
       onTapAction: () {},
       enabled: true,
+      routeName: "product_setup_main_page",
     ),
     _MenuItemTile(
       backGroundColor: Colors.lightBlue,
@@ -78,6 +79,7 @@ class MaintenancePage extends StatelessWidget {
       backGroundColor: Colors.deepOrange,
       menuIcon: Icons.category,
       menuName: "Categories",
+      routeName: "category_setup_page",
       onTapAction: () {},
       enabled: true,
     ),

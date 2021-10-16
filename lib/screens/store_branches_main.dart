@@ -126,7 +126,7 @@ class _StoreBranchesMainState extends State<StoreBranchesMain> with AutomaticKee
                       storeChanged = true;
                       isSuccessful = await _storeKey.currentState.saveStoreInformation();
                     }
-                    if (isSuccessful && _branchKey.currentState.isFormChanged) {
+                    if (isSuccessful && _branchKey!= null && _branchKey.currentState.isFormChanged) {
                       branchChanged = true;
                       isSuccessful = await _branchKey.currentState.saveBranchInformation();
                     }

@@ -9,6 +9,7 @@ class CustomInputFormField extends StatefulWidget {
   final String hintText;
   final String helperText;
   final String labelText;
+  final TextStyle labelTextStyle;
   final String dbValue;
   final IconData prefixIcon;
   final Color prefixIconColor;
@@ -25,6 +26,7 @@ class CustomInputFormField extends StatefulWidget {
   final bool enable;
   final String initialValue;
   final int maxLength;
+  final bool underLineInputBorder;
   final FocusNode focusNode;
   final Function validateFunction;
   final Function onSaveFunction;
@@ -34,6 +36,7 @@ class CustomInputFormField extends StatefulWidget {
   final Function onChangeFunction;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry contentPadding;
+  final BoxConstraints prefixIconConstraints;
   final int minLines;
   final int maxLines;
   final double width;
@@ -43,6 +46,7 @@ class CustomInputFormField extends StatefulWidget {
       {this.hintText,
       this.helperText,
       this.labelText,
+      this.labelTextStyle,
       this.dbValue,
       this.prefixIcon,
       this.prefixIconColor,
@@ -68,8 +72,10 @@ class CustomInputFormField extends StatefulWidget {
       this.onChangeFunction,
       this.padding,
       this.contentPadding,
+      this.prefixIconConstraints,
       this.minLines,
       this.maxLines,
+      this.underLineInputBorder,
       this.width,
       this.height});
 
@@ -89,6 +95,10 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
         ));
   }
 
+  UnderlineInputBorder _underLineInputBorder(Color borderColor) {
+    return UnderlineInputBorder(borderSide: BorderSide(color: borderColor, width: 1));
+  }
+
   @override
   void initState() {
     if (widget.dbValue != null) {
@@ -96,7 +106,6 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
     }
     super.initState();
   }
-
 
   // @override
   // void didUpdateWidget(CustomInputFormField oldWidget) {
@@ -112,9 +121,9 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
       child: Padding(
         padding: widget.padding == null ? EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5) : widget.padding,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(4.0),
           child: ConstrainedBox(
-            constraints: BoxConstraints.tight(Size(widget.width, widget.height == null ? 65 : widget.height)),
+            constraints: BoxConstraints.loose(Size(widget.width, widget.height == null ? 65 : widget.height)),
             child: TextFormField(
               enableInteractiveSelection: true,
               textAlign: widget.textAlign == null ? TextAlign.left : widget.textAlign,
@@ -134,25 +143,32 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
                 isDense: true,
                 counter: SizedBox.shrink(),
                 alignLabelWithHint: true,
-                //labelText: hintText,
                 hintText: widget.hintText,
                 helperText: widget.helperText,
                 labelText: widget.labelText != null ? widget.labelText : null,
                 errorText: widget.errorText,
-
+                labelStyle: widget.labelTextStyle == null ? TextStyle(color: Colors.black) : widget.labelTextStyle,
                 //hintStyle: kLineStyle,
                 errorMaxLines: 2,
-                contentPadding: widget.contentPadding != null ? widget.contentPadding : EdgeInsets.symmetric(horizontal: 1, vertical: 8) ,
-                border: _outlineInputBorder(Colors.grey),
-                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, style: BorderStyle.solid)),
-                enabledBorder: _outlineInputBorder(Colors.orangeAccent),
-                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.orangeAccent, style: BorderStyle.solid)),
-                focusedBorder: _outlineInputBorder(Colors.blue),
-                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue, style: BorderStyle.solid)),
-                errorBorder: _outlineInputBorder(Colors.red),
-                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, style: BorderStyle.solid)),
-                disabledBorder: _outlineInputBorder(Colors.grey),
-                //UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, style: BorderStyle.solid)),
+                contentPadding: widget.contentPadding != null
+                    ? widget.contentPadding
+                    : EdgeInsets.symmetric(horizontal: 1, vertical: 8),
+                focusedErrorBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.red)
+                    : _outlineInputBorder(Colors.red),
+                enabledBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.orangeAccent)
+                    : _outlineInputBorder(Colors.orangeAccent),
+                focusedBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.blue)
+                    : _outlineInputBorder(Colors.blue),
+                errorBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.red)
+                    : _outlineInputBorder(Colors.red),
+                disabledBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.grey)
+                    : _outlineInputBorder(Colors.grey),
+                prefixIconConstraints: widget.prefixIconConstraints,
                 prefixIcon: widget.prefixIcon != null
                     ? Padding(
                         padding: const EdgeInsetsDirectional.only(start: 0.0, bottom: 4, end: 0.0),
@@ -237,7 +253,6 @@ class CustomDropDownWidget extends StatefulWidget {
       this.enable,
       this.underLineInputBorder});
 
-
   @override
   _CustomDropDownWidgetState createState() => _CustomDropDownWidgetState();
 }
@@ -246,22 +261,21 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
   String _validationErrorText;
   dynamic _selectedValue;
 
-
   UnderlineInputBorder _underLineInputBorder(Color borderColor) {
-    return UnderlineInputBorder(
-      borderSide: BorderSide(color: borderColor, width: 1)
-    );
+    return UnderlineInputBorder(borderSide: BorderSide(color: borderColor, width: 1));
   }
 
-  OutlineInputBorder _outlineInputBorder(Color borderColor,) {
-      return OutlineInputBorder(
-          borderSide: BorderSide(color: borderColor, width: 1),
-          borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(3.0),
-            bottomLeft: Radius.circular(3.0),
-            topLeft: Radius.circular(3.0),
-            topRight: Radius.circular(3.0),
-          ));
+  OutlineInputBorder _outlineInputBorder(
+    Color borderColor,
+  ) {
+    return OutlineInputBorder(
+        borderSide: BorderSide(color: borderColor, width: 1),
+        borderRadius: BorderRadius.only(
+          bottomRight: Radius.circular(3.0),
+          bottomLeft: Radius.circular(3.0),
+          topLeft: Radius.circular(3.0),
+          topRight: Radius.circular(3.0),
+        ));
   }
 
   _validateDropDownValue(dynamic value) {
@@ -274,7 +288,6 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
     _selectedValue = widget.selectedValue;
     super.initState();
   }
-
 
   @override
   void didUpdateWidget(CustomDropDownWidget oldWidget) {
@@ -322,11 +335,21 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                         color: widget.prefixIconColor == null ? Colors.black : widget.prefixIconColor,
                       )
                     : null,
-                focusedErrorBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.red) : _outlineInputBorder(Colors.red),
-                enabledBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.orangeAccent) : _outlineInputBorder(Colors.orangeAccent),
-                focusedBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.blue) : _outlineInputBorder(Colors.blue),
-                errorBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.red) : _outlineInputBorder(Colors.red),
-                disabledBorder: widget.underLineInputBorder ?? false ? _underLineInputBorder(Colors.grey) :  _outlineInputBorder(Colors.grey),
+                focusedErrorBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.red)
+                    : _outlineInputBorder(Colors.red),
+                enabledBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.orangeAccent)
+                    : _outlineInputBorder(Colors.orangeAccent),
+                focusedBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.blue)
+                    : _outlineInputBorder(Colors.blue),
+                errorBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.red)
+                    : _outlineInputBorder(Colors.red),
+                disabledBorder: widget.underLineInputBorder ?? false
+                    ? _underLineInputBorder(Colors.grey)
+                    : _outlineInputBorder(Colors.grey),
               ),
               child: Container(
                 padding: EdgeInsets.only(left: 8),
@@ -340,7 +363,6 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
                     style: kTextInputStyle,
                     items: widget.dropDownValues,
                     value: _selectedValue,
-                    onTap: () {},
                     onChanged: !widget.enable
                         ? null
                         : (value) {

@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:models/shelf.dart';
+import 'package:services/shelf.dart';
 import 'package:subbonline_storeadmin/services/image_storage_servcie.dart';
 
-import '../models/store.dart';
 import '../providers_general.dart';
 import '../services/shared_preferences_service.dart';
-import '../services/store_service.dart';
+
 
 abstract class StoreState {
   const StoreState();

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:subbonline_storeadmin/screens/active_store_orders_mobile.dart';
 import 'package:subbonline_storeadmin/screens/order_search_page.dart';
 import 'package:subbonline_storeadmin/screens/past_store_orders.dart';
-import 'package:subbonline_storeadmin/widgets/custom_tabbar_widget.dart';
+import 'package:subbonline_storeadmin/widgets/orders_tabbar_widget.dart';
 
 class StoreOrdersMain extends StatefulWidget {
   static const id = "store_orders";
