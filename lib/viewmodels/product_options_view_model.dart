@@ -1,12 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:models/shelf.dart';
 
 
 import 'package:subbonline_storeadmin/enums/viewstate.dart';
+import 'package:subbonline_storeadmin/services/measurement_units_service.dart';
 
-final productOptionsViewModelProvider = ChangeNotifierProvider.autoDispose<ProductOptionsViewModel>((ref) => ProductOptionsViewModel());
+final productOptionsViewModelProvider = ChangeNotifierProvider<ProductOptionsViewModel>((ref) => ProductOptionsViewModel());
 
 class ProductOptionsViewModel with ChangeNotifier {
+
+  final MeasurementUnitsService _measurementUnitsService = MeasurementUnitsService();
 
   ProductOptionsViewModel();
 
@@ -17,12 +21,17 @@ class ProductOptionsViewModel with ChangeNotifier {
   String _salesTax;
   String _maintainInventory;
 
+  List<int> productVariantId = [];
   List<String> selectedSizes = [];
   List<String> selectedColors = [];
   List<String> selectedUnits = [];
   List<String> selectedUnitValue = [];
-
-  Set<Map<String, dynamic>> customUnitsValues = Set();
+  List<String> price      = [];
+  List<String> surcharge  = [];
+  List<String> quantity   = [];
+  int baseProductVariantId;
+  List<List<String>> imageUrl = [];
+  List<ProductVariants> retrievedVariants = [];
 
   ViewState _state = ViewState.Idle;
 
@@ -71,8 +80,29 @@ class ProductOptionsViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void initialise() {
+    _selectedUnit = null;
+    _sizes = null;
+    _colors = null;
+    _accessory = null;
+    _salesTax = null;
+    _maintainInventory = null;
+    baseProductVariantId = null;
+    selectedSizes = [];
+    selectedColors = [];
+    selectedUnits = [];
+    selectedUnitValue = [];
+    price      = [];
+    surcharge  = [];
+    quantity   = [];
+    imageUrl = [];
+    productVariantId = [];
+    retrievedVariants = [];
+
+  }
+
   @override
   String toString() {
-    return 'ProductOptionsViewModel{_selectedUnit: $_selectedUnit, _sizes: $_sizes, _colors: $_colors, _accessory: $_accessory, _salesTax: $_salesTax, selectedSizes: $selectedSizes, selectedColors: $selectedColors, selectedUnits: $selectedUnits, selectedUnitValue: $selectedUnitValue, customUnitsValues: $customUnitsValues, _state: $_state}';
+    return 'ProductOptionsViewModel{_selectedUnit: $_selectedUnit, _sizes: $_sizes, _colors: $_colors, _accessory: $_accessory, _salesTax: $_salesTax, _maintainInventory: $_maintainInventory, selectedSizes: $selectedSizes, selectedColors: $selectedColors, selectedUnits: $selectedUnits, selectedUnitValue: $selectedUnitValue}';
   }
 }

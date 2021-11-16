@@ -84,13 +84,14 @@ class MainCategorySetupPage extends StatelessWidget {
 
   String validateIntCategoryCode(String value) {
     _intCategoryValidationErrorText = null;
-    if (value.isEmpty) {
+    if (value == null || value.isEmpty) {
       _intCategoryValidationErrorText = "Internal Category Code cannot be blank";
     }
     return _intCategoryValidationErrorText;
   }
 
   saveIntCategoryCode(String value) {
+    isFormChanged = true;
     _selectedIntCategory = value;
   }
 
@@ -452,9 +453,7 @@ class MainCategorySetupPage extends StatelessWidget {
               selectedValue: _selectedIntCategory,
               validatorFunction: validateIntCategoryCode,
               setValueFunction: saveIntCategoryCode,
-              onChangeFunction: (value) {
-                //_formChanged = true;
-              },
+              onChangeFunction: saveIntCategoryCode,
               width: _width * 0.70,
               height: 67,
               focusNode: _intCatCodeFocusNode,

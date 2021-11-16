@@ -9,5 +9,10 @@ class ProductColorService {
     return productColors.map((e) => ProductColors.fromJson(e)).toList();
   }
 
+  String getColorName(String colorHex){
+    var availableColors = getAvailableColors();
+    var _productColor = availableColors.firstWhere((color) => color.color == colorHex);
+    return _productColor.name;
+  }
 
 }

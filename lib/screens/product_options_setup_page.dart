@@ -13,7 +13,7 @@ class ProductOptionsSetupPage extends StatefulWidget {
   ProductOptionsSetupPageState createState() => ProductOptionsSetupPageState();
 }
 
-class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with AutomaticKeepAliveClientMixin {
+class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage>  {
   static final _formKey = GlobalKey<FormState>();
   final MeasurementUnitsService _measurementUnitsService = MeasurementUnitsService();
 
@@ -25,8 +25,8 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
   String _selectedSizeErrorText;
   String _selectedColorErrorText;
 
-  @override
-  bool get wantKeepAlive => true;
+  bool isFormChanged = false;
+
 
   @override
   void initState() {
@@ -126,12 +126,14 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
               });
             },
           ),
-          Text("Maintain Inventory", style: kTextInputStyle,),
+          Text(
+            "Maintain Inventory",
+            style: kTextInputStyle,
+          ),
         ],
       ),
     );
   }
-
 
   Widget buildColorsAvailable(ProductOptionsViewModel model) {
     return Container(
@@ -197,7 +199,6 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
           buildColorsAvailable(model),
           buildMaintainInventory(model),
           buildIsAccessory(model),
-
         ],
       ),
     );
@@ -265,8 +266,7 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
         padding: const EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5),
         child: InputDecorator(
           decoration: InputDecoration(
-            errorText: _selectedSizeErrorText,
-
+              errorText: _selectedSizeErrorText,
               border: outlineInputBorder(Colors.grey),
               enabledBorder: outlineInputBorder(Colors.orangeAccent),
               focusedBorder: outlineInputBorder(Colors.blue),
@@ -293,7 +293,7 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
         padding: const EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5),
         child: InputDecorator(
           decoration: InputDecoration(
-            errorText: _selectedColorErrorText,
+              errorText: _selectedColorErrorText,
               border: outlineInputBorder(Colors.grey),
               enabledBorder: outlineInputBorder(Colors.orangeAccent),
               focusedBorder: outlineInputBorder(Colors.blue),
@@ -312,6 +312,7 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
   }
 
   List<Widget> buildUnitsInput(ProductOptionsViewModel model, String value) {
+    _selectedSizeErrorText = null;
     if (value != null && value.length > 1) {
       var unitSizes = _measurementUnitsService.getMeasurementUnitSizes(value);
       if (unitSizes != null && unitSizes.length == 1 && model.selectedSizes.length == 0) {
@@ -342,7 +343,7 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
                 child: Text(
                   "${unitSizes[index].name}",
                   style:
-                      model.selectedSizes.indexOf(unitSizes[index].unit) >= 0 ? kTextInputStyle : kTextInputStyleGrey,
+                  model.selectedSizes.indexOf(unitSizes[index].unit) >= 0 ? kTextInputStyle : kTextInputStyleGrey,
                 )),
           ],
         );
@@ -382,7 +383,7 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
           Text(
             productColors[index].name,
             style:
-                model.selectedColors.indexOf(productColors[index].color) >= 0 ? kTextInputStyle : kTextInputStyleGrey,
+            model.selectedColors.indexOf(productColors[index].color) >= 0 ? kTextInputStyle : kTextInputStyleGrey,
           ),
         ],
       );
@@ -391,31 +392,38 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
   }
 
   bool saveProductOptions() {
-    bool isSaved = false;
+    bool isSaved = true;
+    _selectedColorErrorText = null;
+    _selectedSizeErrorText = null;
     if (_formKey.currentState.validate()) {
       final model = context.read(productOptionsViewModelProvider.notifier);
       if (model.sizes == "Y" && (model.selectedSizes == null || model.selectedSizes.length == 0)) {
-        setState(() {
-          _selectedSizeErrorText = "Please select available sizes";
-        });
+        _selectedSizeErrorText = "Please select available sizes";
       }
       if (model.colors == "Y" && (model.selectedColors == null || model.selectedColors.length == 0)) {
-        setState(() {
-          _selectedColorErrorText = "Please select colour or uncheck contains colour checkbox";
-        });
+        _selectedColorErrorText = "Please select colour or uncheck contains colour checkbox";
       }
     }
+    setState(() {});
+    if (_selectedColorErrorText != null) {
+      return false;
+    }
+    isFormChanged = false;
     return isSaved;
-
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    _width = MediaQuery.of(context).size.width;
+    _width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Container(
       child: Form(
         key: _formKey,
+        onChanged: () {
+          isFormChanged = true;
+        },
         child: SingleChildScrollView(
           child: Consumer(
             builder: ((context, watch, _) {
@@ -425,7 +433,7 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
               return Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start ,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildProductOptions(model),
                     SizedBox(
@@ -444,7 +452,6 @@ class ProductOptionsSetupPageState extends State<ProductOptionsSetupPage> with A
                       height: 10,
                     ),
                     buildColorsSelectionWidget(model),
-
                   ],
                 ),
               );
@@ -487,8 +494,14 @@ class _CustomUnitsValuesWidgetState extends State<CustomUnitsValuesWidget> {
     if (widget.selectedSizes.length >= 0) {
       _selectedUnit = widget.selectedSizes[0];
     }
-    model.selectedUnits = List.generate(noOfWidgets, (index) => _selectedUnit);
-    model.selectedUnitValue = List.generate(noOfWidgets, (index) => null);
+    if (model.selectedUnits == null || model.selectedUnits.length == 0) {
+      model.selectedUnits = List.generate(noOfWidgets, (index) => _selectedUnit);
+    }
+    if (model.selectedUnitValue == null || model.selectedUnitValue.length == 0) {
+      model.selectedUnitValue = List.generate(noOfWidgets, (index) => null);
+    }
+
+
     generateInputWidget(model, noOfWidgets);
 
     super.initState();
@@ -498,6 +511,7 @@ class _CustomUnitsValuesWidgetState extends State<CustomUnitsValuesWidget> {
   void didUpdateWidget(CustomUnitsValuesWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selectedSizes.length != widget.selectedSizes.length) {
+      print("didUpdateWidget Lengths differ");
       noOfWidgets = widget.selectedSizes.length;
       final model = context.read(productOptionsViewModelProvider.notifier);
       generateInputWidget(model, noOfWidgets);
@@ -522,9 +536,22 @@ class _CustomUnitsValuesWidgetState extends State<CustomUnitsValuesWidget> {
     return items;
   }
 
+  String getUnitValue(ProductOptionsViewModel model, int index) {
+    if (model.selectedUnitValue.length >= index + 1) {
+      return model.selectedUnitValue[index];
+    }
+    return null;
+  }
+
   generateInputWidget(ProductOptionsViewModel model, int noOfWidget) {
     unitsValueInput = List.generate(noOfWidget, (index) {
       unitsValuesController.add(TextEditingController());
+      if (model.selectedUnitValue.length < index + 1) {
+        model.selectedUnitValue.add(null);
+      }
+      if (model.selectedUnits.length < index + 1) {
+        model.selectedUnits.add(_selectedUnit);
+      }
 
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -539,6 +566,7 @@ class _CustomUnitsValuesWidgetState extends State<CustomUnitsValuesWidget> {
             //helperText: "Please enter quantity e.g. 100 grams or 1 Kg",
             //prefixIcon: Icons.workspaces_outline,
             //prefixIconConstraints: BoxConstraints.tight(Size(30, 30)),
+            dbValue: getUnitValue(model, index),
             textEditingController: unitsValuesController[index],
             textInputType: TextInputType.number,
             obscureText: false,
@@ -554,7 +582,15 @@ class _CustomUnitsValuesWidgetState extends State<CustomUnitsValuesWidget> {
             contentPadding: EdgeInsets.only(bottom: 6, top: 10, left: 1, right: 2),
             onChangeFunction: (value) {
               if (model.selectedUnitValue.length < index + 1) {
-                model.selectedUnitValue.fillRange(model.selectedUnitValue.length - 1, index, null);
+                if (model.selectedUnitValue.length >= noOfWidgets) {
+                  model.selectedUnitValue.fillRange(model.selectedUnitValue.length - 1, index, null);
+                }
+                else {
+                  for (int i = model.selectedUnitValue.length -1 ;i<index ; i++) {
+                    model.selectedUnitValue.add(null);
+                    model.selectedUnits.add(_selectedUnit);
+                  }
+                }
               }
               model.selectedUnitValue[index] = value;
             },
@@ -572,13 +608,21 @@ class _CustomUnitsValuesWidgetState extends State<CustomUnitsValuesWidget> {
             prefixIconColor: Colors.orange,
             underLineInputBorder: true,
             dropDownValues: getSelectableUnitsDownItems(),
-            selectedValue: model.selectedUnits[index],
-            padding: EdgeInsets.only(bottom: 3, top: 1, left: 5, right: 5),
-            contentPadding: EdgeInsets.symmetric(horizontal: 1, vertical: 10),
-            //validatorFunction: validateIntCategoryCode,
+            selectedValue: index+1 <= model.selectedUnits.length ? model.selectedUnits[index] : null,
+            padding: EdgeInsets.only(bottom: 8, top: 1, left: 5, right: 5),
+            contentPadding: EdgeInsets.symmetric(horizontal: 1, vertical: 5),
+            validatorFunction: (value) {
+
+            },
             //setValueFunction: saveIntCategoryCode,
             onChangeFunction: (value) {
-              model.selectedUnits[index] = value;
+              if (model.selectedUnits.length < index + 1) {
+                model.selectedUnits.add(value);
+              }
+              else {
+                model.selectedUnits[index] = value;
+              }
+
               //_formChanged = true;
             },
             width: 80,

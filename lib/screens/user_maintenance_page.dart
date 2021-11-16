@@ -260,21 +260,24 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                       visible: allowUserList(),
                       child: InkWell(
                           splashColor: Colors.deepOrange,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.list,
-                              size: 30,
+                          child: Tooltip(
+                            message: "List All Branch Users",
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.list,
+                                size: 30,
+                              ),
+                              splashColor: Colors.deepOrange,
+                              splashRadius: 24,
+                              onPressed: () async {
+                                user = await Navigator.pushNamed(context, UsersListPage.id);
+                                if (user != null) {
+                                  setState(() {
+                                    populateUserScreen(user);
+                                  });
+                                }
+                              },
                             ),
-                            splashColor: Colors.deepOrange,
-                            splashRadius: 24,
-                            onPressed: () async {
-                              user = await Navigator.pushNamed(context, UsersListPage.id);
-                              if (user != null) {
-                                setState(() {
-                                  populateUserScreen(user);
-                                });
-                              }
-                            },
                           )),
                     )
                   ],
@@ -283,7 +286,6 @@ class _UserMaintenancePageState extends State<UserMaintenancePage> {
                   splashColor: Colors.orangeAccent,
                   elevation: 3,
                   //mini: true,
-
                   onPressed: () async {
                     if (_formChanged) {
                       if (await _asyncConfirmDialog(

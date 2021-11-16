@@ -14,6 +14,7 @@ class CustomInputFormField extends StatefulWidget {
   final IconData prefixIcon;
   final Color prefixIconColor;
   final IconData suffixIcon;
+  final Color suffixIconColor;
   final String errorText;
   final TextEditingController textEditingController;
   final TextInputType textInputType;
@@ -33,10 +34,12 @@ class CustomInputFormField extends StatefulWidget {
   final Function onFieldSubmittedFunction;
   final Function onTapFunction;
   final Function suffixIconFunction;
+  final BoxConstraints suffixIconConstraints;
   final Function onChangeFunction;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry contentPadding;
   final BoxConstraints prefixIconConstraints;
+
   final int minLines;
   final int maxLines;
   final double width;
@@ -51,6 +54,7 @@ class CustomInputFormField extends StatefulWidget {
       this.prefixIcon,
       this.prefixIconColor,
       this.suffixIcon,
+      this.suffixIconColor,
       this.errorText,
       @required this.textEditingController,
       this.textInputType,
@@ -69,6 +73,7 @@ class CustomInputFormField extends StatefulWidget {
       this.onFieldSubmittedFunction,
       this.onTapFunction,
       this.suffixIconFunction,
+        this.suffixIconConstraints,
       this.onChangeFunction,
       this.padding,
       this.contentPadding,
@@ -169,6 +174,7 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
                     ? _underLineInputBorder(Colors.grey)
                     : _outlineInputBorder(Colors.grey),
                 prefixIconConstraints: widget.prefixIconConstraints,
+                suffixIconConstraints: widget.suffixIconConstraints,
                 prefixIcon: widget.prefixIcon != null
                     ? Padding(
                         padding: const EdgeInsetsDirectional.only(start: 0.0, bottom: 4, end: 0.0),
@@ -187,7 +193,7 @@ class _CustomInputFormFieldState extends State<CustomInputFormField> {
                           child: Icon(
                             widget.suffixIcon,
                             size: 18,
-                            color: Colors.black,
+                            color: widget.suffixIconColor == null ? Colors.black : widget.suffixIconColor ,
                           ),
                         ),
                       )

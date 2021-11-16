@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:models/shelf.dart';
 import 'package:subbonline_storeadmin/constants.dart';
+import 'package:subbonline_storeadmin/enums/enum_confirmation.dart';
 import 'package:subbonline_storeadmin/viewmodels/product_image_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/product_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/store_view_model.dart';
+import 'package:subbonline_storeadmin/widgets/animated_button.dart';
 import 'package:subbonline_storeadmin/widgets/custom_form_input_field.dart';
+import 'package:subbonline_storeadmin/widgets/deals_widget.dart';
 import 'package:subbonline_storeadmin/widgets/product_images_view.dart';
 
 class ProductSetupPage extends StatefulWidget {
@@ -62,8 +66,22 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
   bool _formSaved = false;
   bool isFormChanged = false;
 
+  String _productId;
+
+  DateTime _addedDateTime;
+
+  List<ProductImage> productImages = [];
+  List<String> retrievedImages = [];
+  List<String> specifications = [];
+
   @override
   bool get wantKeepAlive => true;
+
+  var _fieldDecoration = BoxDecoration(
+      border: Border.all(color: Colors.orangeAccent, width: 1.2),
+      borderRadius: BorderRadius.all(
+        Radius.circular(3),
+      ));
 
   String extractSearchTags(List<String> searchTag1, List<String> searchTag2, List<String> searchTag3) {
     String _searchTags;
@@ -92,53 +110,78 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
     super.initState();
   }
 
-  Future<bool> saveProductDetails() async {
+  Future<bool> validateProduct() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      final model = context.read(productViewModelProvider.notifier);
-      final storeViewModel = context.read(storeViewModelProvider.notifier);
-      var _store = await storeViewModel.getMyStore();
-      model.productName = _productName;
-      model.productIntlName = _productIntlName;
-      model.sku = _sku;
-      model.quantity = _quantity;
-      model.price = _price;
-      model.selectedBrand = _selectedBrand;
-      model.selectedCategory = _selectedCategory;
-      model.selectedStore = _storeCode;
-      model.description = _productDescription;
-      model.manufacturerLink = _manufacturerLink;
-      model.searchTag1 = _searchTag1;
-      model.searchTag2 = _searchTag2;
-      model.searchTag3 = _searchTag3;
-      if (model.addedDateTime == null) {
-        model.addedDateTime = DateTime.now();
-      }
-      if (_storeCode == null) {
-        _storeCode = _store.store;
-      }
-      if (model.selectedStore == null) {
-        model.selectedStore = _storeCode;
-      }
-      bool isProductSaved = await model.saveProductDetails();
-      if (isProductSaved) {
-        if (_isProductExist) {
-          displayMessage(context, "Product Information Updated");
-        } else
-          displayMessage(context, "Product Information Saved");
-
-        _formSaved = true;
-        isFormChanged = false;
-        return true;
-      } else if (isProductSaved == false) {
-        _formSaved = false;
-        displayMessage(context, model.errorMessage);
-      }
-
-      return isProductSaved;
-    }
-    return false;
+      return true;
+    } else
+      return false;
   }
+
+  bool validateProductVariants() {
+    final model = context.read(productViewModelProvider.notifier);
+    return model.validateProductVariants();
+  }
+  bool validateProductImages() {
+    final model = context.read(productViewModelProvider.notifier);
+    model.productImages = productImages;
+    return model.validateProductImages();
+  }
+
+  Future<bool> saveProductDetails() async {
+    await EasyLoading.show(
+      status: 'Saving...',
+      maskType: EasyLoadingMaskType.clear,
+    );
+    final model = context.read(productViewModelProvider.notifier);
+    final storeViewModel = context.read(storeViewModelProvider.notifier);
+    var _store = await storeViewModel.getMyStore();
+    model.productId = _productId;
+    model.productName = _productName;
+    model.productIntlName = _productIntlName;
+    model.sku = _sku;
+    model.quantity = _quantity;
+    model.price = _price;
+    model.selectedBrand = _selectedBrand;
+    model.selectedCategory = _selectedCategory;
+    model.selectedStore = _storeCode;
+    model.description = _productDescription;
+    model.manufacturerLink = _manufacturerLink;
+    model.searchTag1 = _searchTag1;
+    model.searchTag2 = _searchTag2;
+    model.searchTag3 = _searchTag3;
+    model.productImages = productImages;
+    model.retrievedImages = retrievedImages;
+    model.specifications = specifications;
+    if (_addedDateTime == null) {
+      _addedDateTime = DateTime.now();
+    }
+    model.addedDateTime = _addedDateTime;
+    if (_storeCode == null) {
+      _storeCode = _store.store;
+    }
+    if (model.selectedStore == null) {
+      model.selectedStore = _storeCode;
+    }
+    bool isProductSaved = await model.saveProductDetails();
+    EasyLoading.dismiss();
+    if (isProductSaved) {
+      if (_isProductExist) {
+        displayMessage(context, "Product Information Updated");
+      } else
+        displayMessage(context, "Product Information Saved");
+
+      _formSaved = true;
+      isFormChanged = false;
+      return true;
+    } else if (isProductSaved == false) {
+      _formSaved = false;
+      displayMessage(context, model.errorMessage);
+    }
+
+    return isProductSaved;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +201,9 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
 
             void _copyImageOnModel(List<ProductImage> productImages) {
               model.productImages = productImages;
+              this.productImages = productImages;
             }
+
 
             initialise() {
               productNameTextController.clear();
@@ -169,15 +214,22 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
               manufacturerLinkController.clear();
               descriptionController.clear();
               searchTagsController.clear();
+              _productId = null;
               _selectedBrand = null;
               _selectedCategory = null;
               _storeCode = null;
               _isProductExist = false;
               isFormChanged = false;
+              productImages = null;
+              retrievedImages = null;
+              _addedDateTime = null;
+              specifications = [];
+              model.initialise();
               model.rebuildState();
             }
 
             populateForm(Product product) {
+              model.initialise();
               productNameTextController.text = product.name;
               productNameIntlTextController.text = product.intlName;
               skuTextController.text = product.sku;
@@ -186,18 +238,25 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
               manufacturerLinkController.text = product.manufacturerLink;
               descriptionController.text = product.description;
               searchTagsController.text = extractSearchTags(product.searchTag1, product.searchTag2, product.searchTag3);
+              model.product = product;
               model.productId = product.productId;
+              _productId = product.productId;
+              productImages = product.imageUrl.map((e) => ProductImage(downloadURL: e)).toList();
               model.productImages = product.imageUrl.map((e) => ProductImage(downloadURL: e)).toList();
-              if (model.productImages.length > 0) {
+              if (productImages.length > 0) {
+                retrievedImages = model.productImages.map((e) => e.downloadURL).toList();
                 model.retrievedImages = model.productImages.map((e) => e.downloadURL).toList();
               }
               _selectedBrand = product.brand.path;
               _selectedCategory = product.category.path;
               _storeCode = product.storeId;
+              specifications = product.specifications == null ? [] : product.specifications;
+              _addedDateTime = product.addedDateTime;
               _isProductExist = true;
               isFormChanged = false;
+              model.populatedProviders();
 
-              //model. rebuildState();
+              model.rebuildState();
             }
 
             return Column(
@@ -209,7 +268,7 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                     width: _width * 0.98,
                     //height: 50,
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: 5, top: 5, left: 12, right: 5),
+                      padding: EdgeInsets.only(bottom: 5, top: 5, left: 8, right: 5),
                       child: TypeAheadFormField(
                         textFieldConfiguration: TextFieldConfiguration(
                             controller: productNameTextController,
@@ -258,29 +317,32 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                           return suggestionsBox;
                         },
                         itemBuilder: (context, Product suggestion) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                leading: suggestion.imageUrl != null && suggestion.imageUrl.length > 0
-                                    ? SizedBox(width: 30, height: 30, child: Image.network(suggestion.imageUrl[0]))
-                                    : SizedBox(
-                                        width: 30,
-                                        height: 30,
-                                      ),
-                                title: Text('${suggestion.name}'),
-                                trailing: Text('${suggestion.intlName}'),
-                                subtitle: Text('$kGlobalCurrency ${suggestion.price}'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                                child: Divider(
-                                  height: 1,
-                                  color: Colors.grey,
-                                  thickness: 1,
+                          return SizedBox(
+                            height: 75,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  leading: suggestion.imageUrl != null && suggestion.imageUrl.length > 0
+                                      ? SizedBox(width: 30, height: 30, child: Image.network(suggestion.imageUrl[0]))
+                                      : SizedBox(
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                  title: Text('${suggestion.name}'),
+                                  trailing: Text('${suggestion.intlName}'),
+                                  subtitle: Text('$kGlobalCurrency ${suggestion.price}'),
                                 ),
-                              )
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8),
+                                  child: Divider(
+                                    height: 1,
+                                    color: Colors.grey,
+                                    thickness: 1,
+                                  ),
+                                )
+                              ],
+                            ),
                           );
                         },
                         onSuggestionSelected: (Product suggestion) {
@@ -324,7 +386,6 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
 //                          focusNode: _nextFieldFocus,
                       validateFunction: null,
                       onSaveFunction: _productIntlNameSave,
-//                          onFieldSubmittedFunction: _node.nextFocus
                     ),
                   ),
                   Container(
@@ -426,6 +487,7 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
 
                 CustomInputFormField(
                   hintText: "Manufacturer's site link",
+                  labelText: "Manufacturer's site link",
                   //initialValue: _manufacturerLink,
                   prefixIcon: Icons.http,
                   textEditingController: manufacturerLinkController,
@@ -447,6 +509,7 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                 //Description
                 CustomInputFormField(
                   hintText: "Description",
+                  labelText: "Description",
                   //initialValue: _productDescription,
                   prefixIcon: Icons.assignment,
                   textEditingController: descriptionController,
@@ -465,8 +528,15 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                   //onFieldSubmittedFunction: _node.nextFocus
                 ),
                 //Add Deals
+                ProductSpecificationCustomWidget(
+                  specifications: specifications,
+                  onUpdateSpecs: (List<String> specs) {
+                    specifications = specs;
+                  },
+                ),
                 CustomInputFormField(
                   hintText: "Search Tag 1, Search Tag 2, Search Tag 3",
+                  labelText: "Search Tag 1, Search Tag 2, Search Tag 3",
                   //initialValue: _searchTags,
                   prefixIcon: Icons.saved_search,
                   prefixIconConstraints: BoxConstraints.tight(Size(30, 40)),
@@ -481,13 +551,15 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                   padding: const EdgeInsets.only(bottom: 1, top: 1, left: 5, right: 5),
                   autoFocus: false,
                   focusNode: null,
-
                   //validateFunction:
                   onSaveFunction: _saveSearchTags,
                   //onFieldSubmittedFunction: _node.nextFocus
                 ),
 
-                ProductImagesView(_copyImageOnModel, model.productImages),
+
+                ProductImagesView(99, _copyImageOnModel, productImages),
+
+                buildDealsWidget(model)
               ],
             );
           }),
@@ -504,7 +576,7 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
         style: TextStyle(color: Colors.black),
       ),
       backgroundColor: Colors.lightBlue,
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 2000),
     ));
   }
 
@@ -544,6 +616,7 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
   }
 
   void _brandSave(String value) {
+    print("Band Selected $value");
     _selectedBrand = value;
   }
 
@@ -632,11 +705,12 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
           }
           return Container(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 75, maxWidth: 300),
+              constraints: BoxConstraints(maxHeight: 78, maxWidth: 300),
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 8, right: 1),
+                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 3, right: 1),
                 child: CustomDropDownWidget(
                   key: _formKey,
+
                   hintText: "Category",
                   errorText: _categoryValidationErrorText,
                   helperText: "Please select Category.",
@@ -647,11 +721,9 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                   selectedValue: _selectedCategory,
                   validatorFunction: _validateCategory,
                   setValueFunction: _categorySave,
-                  onChangeFunction: (value) {
-                    //_formChanged = true;
-                  },
+                  onChangeFunction: _categorySave,
                   width: _width * 0.70,
-                  height: 67,
+                  height: 70,
                   //focusNode: _intCatCodeFocusNode,
                   enable: true,
                 ),
@@ -659,6 +731,116 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
             ),
           );
         });
+  }
+  Future<ConfirmAction> _asyncDealSelectionDialog(BuildContext context) async {
+    final model = context.read(productViewModelProvider.notifier);
+    return showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Select Deal Type',
+            style: k16Black,
+          ),
+          content: DealsWidget(model: model),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop(ConfirmAction.CANCEL);
+              },
+            ),
+            FlatButton(
+              child: const Text('CONFIRM'),
+              onPressed: () {
+                Navigator.of(context).pop(ConfirmAction.CONFIRM);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  _onDealAdd() async {
+    final model = context.read(productViewModelProvider.notifier);
+    Deals _deals = model.deal;
+    ConfirmAction confirmAction = await _asyncDealSelectionDialog(context);
+    if (confirmAction == ConfirmAction.CANCEL) {
+      model.deal = _deals;
+    }
+    if (model.deal != null && model.deal != _deals) {
+      model.dealsAddedDateTime = DateTime.now();
+    }
+    setState(() {});
+  }
+
+  _onDealRemove() {
+    final model = context.read(productViewModelProvider.notifier);
+    if (model.deal != null) {
+      setState(() {
+        model.deal = null;
+        model.dealsAddedDateTime = null;
+      });
+    }
+  }
+
+
+  Widget buildDealsWidget(ProductViewModel model) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        width: _width * 0.95,
+        decoration: _fieldDecoration,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                    child: Text(
+                      "Deals",
+                      style: k16Black,
+                    )),
+                Visibility(
+                  visible: model.deal == null,
+                  child: AnimatedButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.orangeAccent,
+                        size: 30.0,
+                      ),
+                      onTapAction: _onDealAdd),
+                ),
+                Visibility(
+                  visible: model.deal != null,
+                  child: AnimatedButton(
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.orangeAccent,
+                        size: 30.0,
+                      ),
+                      onTapAction: _onDealRemove),
+                ),
+              ],
+            ),
+            Visibility(
+              visible: model.deal != null,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child:
+                model.deal == null ? Text("") : Text("${model.deal.name} ${model.deal.dealValue}"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
   }
 
   List<DropdownMenuItem<String>> _getBrandsDropDown(List<Brands> brands) {
@@ -685,9 +867,9 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
           }
           return Container(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 75, maxWidth: 300),
+              constraints: BoxConstraints(maxHeight: 78, maxWidth: 300),
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 8, right: 1),
+                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 3, right: 1),
                 child: CustomDropDownWidget(
                   key: _formKey,
                   hintText: "Brand",
@@ -700,11 +882,9 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
                   selectedValue: _selectedBrand,
                   validatorFunction: _validateBrand,
                   setValueFunction: _brandSave,
-                  onChangeFunction: (value) {
-                    //_formChanged = true;
-                  },
+                  onChangeFunction: _brandSave,
                   width: _width * 0.70,
-                  height: 67,
+                  height: 70,
                   //focusNode: _intCatCodeFocusNode,
                   enable: true,
                 ),
@@ -712,5 +892,167 @@ class ProductSetupPageState extends State<ProductSetupPage> with AutomaticKeepAl
             ),
           );
         });
+  }
+}
+
+class ProductSpecificationCustomWidget extends StatefulWidget {
+
+  ProductSpecificationCustomWidget({Key key, this.specifications, this.onUpdateSpecs}) : super(key: key);
+  final List<String> specifications;
+  final Function onUpdateSpecs;
+
+
+
+  @override
+  _ProductSpecificationCustomWidgetState createState() => _ProductSpecificationCustomWidgetState();
+}
+
+class _ProductSpecificationCustomWidgetState extends State<ProductSpecificationCustomWidget> {
+  double _width = 0;
+  int noOfSpecs = 6;
+  int maxNoOfSpecs = 20;
+  List<String> specifications;
+  List<TextEditingController> specificationController = [];
+  var _scrollController = ScrollController(initialScrollOffset: 0.0);
+
+
+  @override
+  void initState() {
+    super.initState();
+    specifications = widget.specifications;
+    _scrollController.addListener(()  async {
+      if (_scrollController.hasClients) {
+        if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
+            !_scrollController.position.outOfRange) {
+          
+          if (noOfSpecs < maxNoOfSpecs) {
+            setState(() {
+              noOfSpecs++;
+            });
+          }
+        }
+        if (_scrollController.offset <= _scrollController.position.minScrollExtent &&
+            !_scrollController.position.outOfRange) {
+          //print("reach the top");
+        }
+      }
+    });
+  }
+
+
+  @override
+  void didUpdateWidget(ProductSpecificationCustomWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.specifications != oldWidget.specifications) {
+      specifications = widget.specifications;
+      specificationController = [];
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    _width = MediaQuery.of(context).size.width;
+    Icons abc;
+
+    String getSpecLineValue(int index) {
+      if (specifications != null && specifications.length > index ) {
+        return specifications[index];
+      }
+      return null;
+    }
+
+    return Consumer(
+      builder:  ((context, watch, _){
+        final model = watch(productViewModelProvider.notifier);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 5, top: 5, left: 12, right: 1),
+          child: Container(
+            width: _width * 0.95,
+            height: 200,
+            child: InputDecorator(
+              decoration: InputDecoration(
+                  border: outlineInputBorder(Colors.grey),
+                  enabledBorder: outlineInputBorder(Colors.orangeAccent),
+                  focusedBorder: outlineInputBorder(Colors.blue),
+                  errorBorder: outlineInputBorder(Colors.red),
+                  disabledBorder: outlineInputBorder(Colors.grey),
+                  labelText: "Specifications"),
+
+              child: Scrollbar(
+                thickness: 6 ,
+                radius: Radius.circular(50),
+                child: ListView.builder(
+                    addAutomaticKeepAlives: false,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount: specifications != null && specifications.length > noOfSpecs ? specifications.length : noOfSpecs,
+                    itemBuilder: (context, index) {
+                      if (specificationController.length < index + 1) {
+                        specificationController.add(TextEditingController());
+                        specificationController[index].text = getSpecLineValue(index);
+                      }
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(padding: EdgeInsets.all(2),
+                            child: SizedBox(
+                              width: 20,
+                                child: Text("${index+1}.")),
+                          ),
+                          CustomInputFormField(
+                            //hintText: "Search Tag 1, Search Tag 2, Search Tag 3",
+                            //labelText: "Search Tag 1, Search Tag 2, Search Tag 3",
+                            //initialValue: _searchTags,
+                            //prefixIcon: Icons.saved_search,
+                            //prefixIconConstraints: BoxConstraints.tight(Size(30, 40)),
+                            //dbValue: getSpecLineValue(model, index),
+                            suffixIcon: Icons.clear,
+                            suffixIconColor: Colors.grey[500],
+                            suffixIconFunction: () {
+                              specificationController[index].clear();
+                            },
+                            suffixIconConstraints: BoxConstraints.tight(Size(20,30)),
+                            textEditingController: specificationController[index],
+                            textInputType: TextInputType.text,
+                            obscureText: false,
+                            textInputAction: TextInputAction.next,
+                            underLineInputBorder: true,
+                            minLines: 1,
+                            maxLines: 1,
+                            maxLength: 60,
+                            width: _width * 0.79,
+                            height: 30,
+                            padding: const EdgeInsets.only(bottom: 1, top: 1, left: 5, right: 1),
+                            autoFocus: false,
+                            focusNode: null,
+                            //validateFunction:
+                            onChangeFunction: (value) {
+                              if (specifications != null && specifications.length > index) {
+                                specifications[index] = value;
+                              }
+                              else {
+                                specifications.add(value);
+                              }
+                              widget.onUpdateSpecs(specifications);
+                            },
+                            //onFieldSubmittedFunction: _node.nextFocus
+                          ),
+                        ],
+                      );
+                    }),
+              ),
+            ),
+          ),
+        );
+      })
+    );
   }
 }

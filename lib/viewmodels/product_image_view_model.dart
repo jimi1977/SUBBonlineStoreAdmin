@@ -21,7 +21,7 @@ class ProductImage {
 
 }
 
-final productImageModel = ChangeNotifierProvider((ref) => ProductImagesModel());
+final productImageModel = ChangeNotifierProvider.family((ref, id) => ProductImagesModel());
 
 class ProductImagesModel  with ChangeNotifier {
   List<ProductImage> productImages = [];

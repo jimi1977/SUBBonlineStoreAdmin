@@ -39,6 +39,10 @@ const k14BoldGrey = TextStyle(fontFamily: kFontFamily, fontSize: 14.0,color: Col
 const k14BoldRed = TextStyle(fontFamily: kFontFamily, fontSize: 14.0,color: Colors.red,fontWeight: FontWeight.bold);
 const k14BoldBlack = TextStyle(fontFamily: kFontFamily, fontSize: 14.0,color: Colors.black,fontWeight: FontWeight.bold);
 const k16BoldBlack = TextStyle(fontFamily: kFontFamily, fontSize: 16.0,color: Colors.black,fontWeight: FontWeight.bold);
+const k16Black = TextStyle(fontFamily: kFontFamily, fontSize: 16.0,color: Colors.black,);
+
+const k16Colored = TextStyle(
+    color: Color(0xFF563734), fontFamily: kFontFamily, fontSize: 16.0);
 
 const kOrderStatusTextStyleG = TextStyle(fontFamily: kFontFamily, fontSize: 16.0,color: Colors.green,fontWeight: FontWeight.bold);
 
