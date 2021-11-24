@@ -433,11 +433,14 @@ class ProductViewModel with ChangeNotifier {
   }
 
   String getProductUnit() {
+    if (productOptionsViewModel.selectedSizes == null || productOptionsViewModel.selectedSizes.length == 0) {
+      return "each";
+    }
     if (productOptionsViewModel.selectedSizes != null && productOptionsViewModel.selectedSizes.length == 1) {
       return productOptionsViewModel.selectedSizes[0];
     }
-    if (productOptionsViewModel.selectedSizes == null) {
-      return "each";
+    if (productOptionsViewModel.baseProductVariantId != null && productOptionsViewModel.baseProductVariantId > 0) {
+      return productOptionsViewModel.selectedSizes[productOptionsViewModel.baseProductVariantId];
     }
     return null;
   }
