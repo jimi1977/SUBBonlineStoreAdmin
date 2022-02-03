@@ -63,7 +63,7 @@ class SubOnlineStoreApp extends StatelessWidget {
           primaryColor: Colors.white,
           fontFamily: 'Roboto',
           scaffoldBackgroundColor: Colors.white,
-          appBarTheme: AppBarTheme(elevation: 0.0),
+          appBarTheme: AppBarTheme(elevation: 0.0, color: Colors.white, ),
           //This is important
           // timePickerTheme: TimePickerThemeData(
           //   backgroundColor: Colors.orangeAccent[200],
@@ -156,6 +156,7 @@ class BackGroundPage extends StatelessWidget {
         child: Image.asset(
           'images/subbonline_store_bg.jpg',
           fit: BoxFit.scaleDown,
+         // color: Colors.transparent,
           alignment: Alignment.bottomCenter,
           height: MediaQuery.of(context).size.height / _heightFactor,
           width: MediaQuery.of(context).size.width / _widthFactor,

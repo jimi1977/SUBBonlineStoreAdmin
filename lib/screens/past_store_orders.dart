@@ -3,12 +3,14 @@ import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/screens/store_orders_list.dart';
 import 'package:subbonline_storeadmin/viewmodels/progress_bar_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/store_oders_view_model.dart';
+import 'package:subbonline_storeadmin/viewmodels/store_view_model.dart';
 
 
 class PastStoreOrders extends StatefulWidget {
@@ -26,6 +28,10 @@ class _PastStoreOrdersState extends State<PastStoreOrders> with AutomaticKeepAli
 
   Order order;
 
+  String _storeId;
+
+  String _branchId;
+
   List<StoreOrder> storeOrders;
 
   final orderCache = AsyncCache<List<Order>>(const Duration(minutes: 0));
@@ -33,12 +39,18 @@ class _PastStoreOrdersState extends State<PastStoreOrders> with AutomaticKeepAli
   @override
   bool get wantKeepAlive => true;
 
+
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     final storeOrderProvider = context.read(storeOrderViewModelProvider.notifier);
     final progressBarViewModel = context.read(progressViewModelProvider.notifier);
+
+    _storeId = storeOrderProvider.getCurrentStoreId();
+    _branchId = storeOrderProvider.getCurrentBranchId();
+
     Future<List<Order>> _getOrdersByIdFuture(List<StoreOrder> storeOrders) => orderCache.fetch(() {
       return storeOrderProvider.getOrdersByOrderIds(storeOrders);
     });
@@ -47,7 +59,7 @@ class _PastStoreOrdersState extends State<PastStoreOrders> with AutomaticKeepAli
           final pastOrdersProviderModel = watch(pastOrdersProvider);
           print('Build Past Orders Consumer');
           return StreamBuilder<QuerySnapshot>(
-              stream: storeOrderProvider.getPastStoreOrders("SUBO", null, pastOrdersProviderModel.orderDateTime, pastOrdersProviderModel.recordsLimit ),
+              stream: storeOrderProvider.getPastStoreOrders(_storeId, _branchId, pastOrdersProviderModel.orderDateTime, pastOrdersProviderModel.recordsLimit ),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData && snapshot.connectionState != ConnectionState.done) {
                   //progressBarViewModel.startProgress();

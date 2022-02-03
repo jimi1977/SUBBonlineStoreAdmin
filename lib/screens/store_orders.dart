@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:subbonline_storeadmin/constants.dart';
 import 'package:subbonline_storeadmin/screens/active_store_orders_mobile.dart';
 import 'package:subbonline_storeadmin/screens/order_search_page.dart';
 import 'package:subbonline_storeadmin/screens/past_store_orders.dart';
@@ -43,7 +44,7 @@ class _StoreOrdersMainState extends State<StoreOrdersMain> with AutomaticKeepAli
                     )),
               )
             ],
-            title: Text("Our Orders"),
+            title: Text("Our Orders", style: TextStyle(color: Colors.black),),
             //backgroundColor: kMainPalette,
             centerTitle: true,
             bottom: OrdersTabBarWidget()),

@@ -26,6 +26,7 @@ class _StoreBranchesTabBarState extends State<StoreBranchesTabBar> {
   Widget build(BuildContext context) {
     return  Container(
       child: TabBar(
+
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: UnderlineTabIndicator(
           insets: EdgeInsets.all(4),

@@ -3,11 +3,13 @@ import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:models/store.dart';
 import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subbonline_storeadmin/screens/store_orders_list.dart';
 import 'package:subbonline_storeadmin/viewmodels/progress_bar_view_model.dart';
 import 'package:subbonline_storeadmin/viewmodels/store_oders_view_model.dart';
+import 'package:subbonline_storeadmin/viewmodels/store_view_model.dart';
 
 class ActiveStoreOrders extends StatefulWidget {
   final String orderType;
@@ -24,6 +26,8 @@ class _ActiveStoreOrdersState extends State<ActiveStoreOrders> with AutomaticKee
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   Order order;
+  String _storeId;
+  String _branchId;
 
   List<StoreOrder> storeOrders;
 
@@ -32,20 +36,23 @@ class _ActiveStoreOrdersState extends State<ActiveStoreOrders> with AutomaticKee
   @override
   bool get wantKeepAlive => true;
 
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     final storeOrderProvider = context.read(storeOrderViewModelProvider.notifier);
     final progressBarViewModel = context.read(progressViewModelProvider.notifier);
     Future<List<Order>> _getOrdersByIdFuture(List<StoreOrder> storeOrders) => orderCache.fetch(() {
       return storeOrderProvider.getOrdersByOrderIds(storeOrders);
     });
+    _storeId = storeOrderProvider.getCurrentStoreId();
+    _branchId = storeOrderProvider.getCurrentBranchId();
+
     return _noOrders
         ? _buildNoNewOrderWidget()
         : Container(
         child: StreamBuilder<QuerySnapshot>(
-            stream: storeOrderProvider.getStoreOrdersReceivedByStoreId("SUBO", null, widget.orderType),
+            stream: storeOrderProvider.getStoreOrdersReceivedByStoreId(_storeId, _branchId, widget.orderType),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData && snapshot.connectionState != ConnectionState.done) {
                 //progressBarViewModel.startProgress();

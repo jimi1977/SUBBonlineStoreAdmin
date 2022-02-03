@@ -21,7 +21,7 @@ const kDefaultDeliveryRange = 5.0;
 const kTextInputStyle = TextStyle(fontFamily: kFontFamily, fontSize: 14.0, color: Colors.black);
 const kTextInputStyleGrey = TextStyle(fontFamily: kFontFamily, fontSize: 14.0, color: Colors.grey);
 
-const kHeaderTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 16.0);
+const kHeaderTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 16.0,color: Colors.black);
 
 const kNameTextStyle = TextStyle(fontFamily: kFontFamily, fontSize: 14.0, fontWeight: FontWeight.w500);
 const kNameTextStyle15 = TextStyle(fontFamily: kFontFamily, fontSize: 15.0, fontWeight: FontWeight.w500);

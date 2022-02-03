@@ -9,6 +9,7 @@ import 'package:subbonline_storeadmin/models/order.dart';
 import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/services/customer_service.dart';
 import 'package:subbonline_storeadmin/services/order_service.dart';
+import 'package:subbonline_storeadmin/services/shared_preferences_service.dart';
 
 abstract class OrderState {
   const OrderState();
@@ -55,13 +56,14 @@ class OrderError extends OrderState {
 }
 
 final storeOrderViewModelProvider = StateNotifierProvider.autoDispose(
-    (ref) => StoreOrdersViewModel(ref.watch(orderServiceProvider), ref.watch(customerOrderServiceProvider)));
+    (ref) => StoreOrdersViewModel(ref.watch(orderServiceProvider), ref.watch(customerOrderServiceProvider), ref.watch(sharedPreferencesServiceProvider)));
 
 class StoreOrdersViewModel extends StateNotifier<OrderState> {
-  StoreOrdersViewModel(this.orderService, this.customerService) : super(OrderInitial());
+  StoreOrdersViewModel(this.orderService, this.customerService, this.sharedPreferencesService, ) : super(OrderInitial());
 
   final OrderService orderService;
   final CustomerService customerService;
+  final SharedPreferencesService sharedPreferencesService;
 
   final customerCache = AsyncCache<Customer>(const Duration(minutes: 60));
 
@@ -81,6 +83,16 @@ class StoreOrdersViewModel extends StateNotifier<OrderState> {
 
   updateState() {
     state = OrderInitial();
+  }
+
+  String getCurrentStoreId() {
+    String storeId =sharedPreferencesService.getStoreId();
+    return storeId;
+  }
+
+  String getCurrentBranchId() {
+    String branchId =sharedPreferencesService.getBranchId();
+    return branchId;
   }
 
 
