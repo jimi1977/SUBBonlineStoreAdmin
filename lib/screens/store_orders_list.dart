@@ -98,6 +98,9 @@ class StoreOrderListMobile extends StatelessWidget {
             ),
           ),
         ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: 40,),
+        )
       ],
 
     );

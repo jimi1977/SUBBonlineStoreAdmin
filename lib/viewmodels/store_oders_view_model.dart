@@ -10,6 +10,7 @@ import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/services/customer_service.dart';
 import 'package:subbonline_storeadmin/services/order_service.dart';
 import 'package:subbonline_storeadmin/services/shared_preferences_service.dart';
+import 'package:subbonline_storeadmin/viewmodels/rider_view_model.dart';
 
 abstract class OrderState {
   const OrderState();
@@ -56,14 +57,15 @@ class OrderError extends OrderState {
 }
 
 final storeOrderViewModelProvider = StateNotifierProvider.autoDispose(
-    (ref) => StoreOrdersViewModel(ref.watch(orderServiceProvider), ref.watch(customerOrderServiceProvider), ref.watch(sharedPreferencesServiceProvider)));
+    (ref) => StoreOrdersViewModel(ref.watch(orderServiceProvider), ref.watch(customerOrderServiceProvider), ref.watch(sharedPreferencesServiceProvider), ref.watch(riderViewProvider)));
 
 class StoreOrdersViewModel extends StateNotifier<OrderState> {
-  StoreOrdersViewModel(this.orderService, this.customerService, this.sharedPreferencesService, ) : super(OrderInitial());
+  StoreOrdersViewModel(this.orderService, this.customerService, this.sharedPreferencesService, this.riderViewModel ) : super(OrderInitial());
 
   final OrderService orderService;
   final CustomerService customerService;
   final SharedPreferencesService sharedPreferencesService;
+  final RiderViewModel riderViewModel;
 
   final customerCache = AsyncCache<Customer>(const Duration(minutes: 60));
 
@@ -93,6 +95,10 @@ class StoreOrdersViewModel extends StateNotifier<OrderState> {
   String getCurrentBranchId() {
     String branchId =sharedPreferencesService.getBranchId();
     return branchId;
+  }
+
+  String getSelectedRider() {
+    return riderViewModel.selectedRiderUid;
   }
 
 
@@ -214,6 +220,14 @@ class StoreOrdersViewModel extends StateNotifier<OrderState> {
   updateOrderStatus(Order order, OrderStageEnum stage) {
     try {
       orderService.updateOrderStage(order, stage);
+    } on Exception catch (e) {
+      errorMessage = orderService.errorMessage;
+    }
+  }
+  updateOrderStatusWithRider(Order order, OrderStageEnum stage, String riderId) {
+    try {
+      orderService.updateOrderStageWithRider(order, stage, riderId);
+      riderViewModel.addToRiderQueue(riderId, order);
     } on Exception catch (e) {
       errorMessage = orderService.errorMessage;
     }

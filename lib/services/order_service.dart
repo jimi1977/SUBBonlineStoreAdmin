@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:subbonline_storeadmin/enums/order_satges_enum.dart';
 import 'package:subbonline_storeadmin/models/order.dart';
+import 'package:subbonline_storeadmin/viewmodels/rider_view_model.dart';
 
 class OrderService {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -130,7 +131,35 @@ class OrderService {
       await _firestore
           .collection("storeOrders")
           .doc(order.storeOrders.orderId + "-" + order.storeOrders.storeId)
-          .update({"orderStage": fireStoreOrderStages(orderStages), "status": orderStage.toString().split(".")[1]});
+          .update({"orderStage": fireStoreOrderStages(orderStages), "status": orderStage.toString().split(".")[1]},);
+
+      // await _firestore
+      //     .collection(ref)
+      //     .doc(order.orderId)
+      //     .collection("storeOrders")
+      //     .doc(order.storeOrders.storeId)
+      //     .update({"orderStage": fireStoreOrderStages(orderStages),
+      //      "status":orderStage.toString().split(".")[1]});
+    } on Exception catch (e) {
+      errorMessage = e.toString();
+    }
+  }
+  updateOrderStageWithRider(Order order, OrderStageEnum orderStage, String riderId) async {
+    DateTime _currentDatetime = DateTime.now();
+
+    List<OrderStage> orderStages = order.storeOrders.orderStage;
+
+    OrderStage _orderStage =
+    OrderStage(stage: orderStage.toString().split(".")[1], stageChangeDatetime: _currentDatetime);
+
+    orderStages.add(_orderStage);
+
+    try {
+      await _firestore
+          .collection("storeOrders")
+          .doc(order.storeOrders.orderId + "-" + order.storeOrders.storeId)
+          .update({"orderStage": fireStoreOrderStages(orderStages), "status": orderStage.toString().split(".")[1], "riderId": riderId},);
+
 
       // await _firestore
       //     .collection(ref)

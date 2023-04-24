@@ -11,20 +11,20 @@ class MaintenancePage extends StatelessWidget {
   final int pageIndex;
 
   MaintenancePage({Key key, this.pageIndex}) : super(key: key);
-  List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
-    StaggeredTile.count(2, 2), //Products
-    StaggeredTile.count(2, 1), //Update Price
-    StaggeredTile.count(2, 1), //Update Price
-    StaggeredTile.count(4, 1), //Store
-    StaggeredTile.count(2, 2), //Main Category
-    StaggeredTile.count(1, 2), //Category
+  List<QuiltedGridTile> _staggeredTiles = <QuiltedGridTile>[
+    QuiltedGridTile(2, 2), //Products
+    QuiltedGridTile(2, 1), //Update Price
+    QuiltedGridTile(2, 1), //Update Price
+    QuiltedGridTile(3, 1), //Store
+    QuiltedGridTile(2, 2), //Main Category
+    QuiltedGridTile(1, 2), //Category
 
 
-    // StaggeredTile.count(1, 2),
-    // StaggeredTile.count(1, 1),
-    StaggeredTile.count(1, 1), //Brand
-    StaggeredTile.count(1, 1), //Sizes
-    StaggeredTile.count(4, 1), //Users
+    // StaggeredTunt(1, 2),
+    // StaggeredTunt(1, 1),
+    QuiltedGridTile(1, 1), //Brand
+    QuiltedGridTile(1, 1), //Sizes
+    QuiltedGridTile(3, 1), //Users
   ];
   List<String> _menuItems = [
     'Product',
@@ -115,17 +115,28 @@ class MaintenancePage extends StatelessWidget {
   final _random = Random();
 
   Widget buildMaintenanceMenu() {
-    return StaggeredGridView.count(
 
-      crossAxisCount: 4,
-      staggeredTiles: _staggeredTiles,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      padding: const EdgeInsets.all(4),
-      children: _tiles,
-      shrinkWrap: true,
+    return GridView.count(crossAxisCount: 2,
+    children: _tiles,);
 
+    return GridView.custom(
+      gridDelegate: SliverQuiltedGridDelegate(
+
+
+        crossAxisCount: 4,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+        repeatPattern: QuiltedGridRepeatPattern.inverted,
+
+        pattern: _staggeredTiles,
+      ),
+
+      childrenDelegate: SliverChildBuilderDelegate(
+
+            (context, index) => _tiles[index]
+      ),
     );
+
   }
 
   @override

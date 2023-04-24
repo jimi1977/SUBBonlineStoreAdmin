@@ -11,6 +11,7 @@ import 'package:subbonline_storeadmin/providers_general.dart';
 import 'package:subbonline_storeadmin/screens/my_order_details.dart';
 import 'package:subbonline_storeadmin/utility/utility_functions.dart';
 import 'package:subbonline_storeadmin/viewmodels/store_oders_view_model.dart';
+import 'package:subbonline_storeadmin/widgets/rider_selection_widget.dart';
 
 class StoreOrdersMobilePortrait extends StatefulWidget {
   final Order order;
@@ -239,6 +240,29 @@ class OrderOutForDeliveryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storeOrderProvider = context.read(storeOrderViewModelProvider.notifier);
+
+    buildRiderPicker() {
+      return showModalBottomSheet(
+        context: context,
+          isDismissible: true,
+          isScrollControlled: false,
+          enableDrag: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+        builder: (BuildContext context) {
+          return Container(
+            child: RiderSelectionWidget(),
+          );
+        }
+
+      );
+
+
+
+    }
+
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: RawMaterialButton(
@@ -251,9 +275,21 @@ class OrderOutForDeliveryButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
             side: BorderSide(width: 1, color: Colors.green, style: BorderStyle.solid),
             borderRadius: BorderRadius.all(Radius.circular(4))),
-        onPressed: () {
+        onPressed: () async {
           try {
-            storeOrderProvider.updateOrderStatus(order, OrderStageEnum.OutForDelivery);
+            await buildRiderPicker();
+            if (storeOrderProvider.getSelectedRider() != null) {
+              print("Selected Rider ${storeOrderProvider.getSelectedRider()}");
+              storeOrderProvider.updateOrderStatusWithRider(order, OrderStageEnum.OutForDelivery,storeOrderProvider.getSelectedRider() );
+            }
+            else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Please select Rider before setting status OutForDeliver."),
+                backgroundColor: Colors.blue,
+                duration: Duration(milliseconds: 4000),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+              ));
+            }
             //this.widget.removeFunction(order, 0, this.selected);
             //storeOrderProvider.updateState();
           } on Exception catch (e) {
@@ -270,7 +306,10 @@ class OrderOutForDeliveryButton extends StatelessWidget {
         ),
       ),
     );
+
+
   }
+
 }
 
 class OrderInProgressButton extends StatelessWidget {

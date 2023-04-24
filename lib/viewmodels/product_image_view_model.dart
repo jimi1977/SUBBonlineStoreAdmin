@@ -52,7 +52,7 @@ class ProductImagesModel  with ChangeNotifier {
   }
 
   Future<File> cropImage(File imageFile) async {
-    File cropped = await ImageCropper.cropImage(
+    File cropped = await ImageCropper().cropImage(
         sourcePath: imageFile.path,
         aspectRatioPresets: Platform.isAndroid
         ? [

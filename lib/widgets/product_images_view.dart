@@ -107,7 +107,7 @@ class ProductImagesView extends StatelessWidget {
                                         fit: BoxFit.fill)),
                                 //height: double.infinity,
 
-                                child: OutlineButton(
+                                child: OutlinedButton(
                                     child: Visibility(
                                       visible: productImages == null ||productImages.isEmpty || productImages.length <= index,
                                       child: Icon(

@@ -14,9 +14,10 @@ class StoreUsers {
   final String status;
   final DateTime dateCreated;
   final DateTime dateInactivated;
+  final int ordersInQueue;
 
   StoreUsers({this.uid, this.userId, this.password, this.name, this.storeId, this.branchId, this.roleCode, this.status, this.dateCreated,
-      this.dateInactivated});
+      this.dateInactivated, this.ordersInQueue});
 
   factory StoreUsers.fromMap(Map<String, dynamic> map) {
     if (map.isEmpty) return null;
@@ -31,6 +32,7 @@ class StoreUsers {
       status: map['status'] as String,
       dateCreated: convertTimeStampToDatetime(map['dateCreated']),
       dateInactivated: convertTimeStampToDatetimeWithNull(map['dateInactivated']),
+      ordersInQueue: map['ordersInQueue'] ?? 0
     );
   }
 
@@ -47,6 +49,7 @@ class StoreUsers {
       'status': this.status,
       'dateCreated': this.dateCreated,
       'dateInactivated': this.dateInactivated,
+      'ordersInQueue': this.ordersInQueue
     } as Map<String, dynamic>;
   }
 
